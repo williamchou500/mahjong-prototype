@@ -55,9 +55,7 @@ function check_triplets(array) {
         }
     }
 
-    console.log(triplets.filter((value, index, self) => self.indexOf(value) === index));
-
-    return triplets;
+    return triplets.filter((value, index, self) => self.indexOf(value) === index);
 }
 
 function check_sequence(array) {
@@ -67,16 +65,13 @@ function check_sequence(array) {
     for (let i = 2; i < array.length; i++) {
         if (array[i-2] === (array[i-1] - 1) && array[i-1] === (array[i] - 1)) {
             grouped_sequences.push([array[i-2], array[i-1], array[i]]);
-            sequence_tiles.push([array[i-2]]);
-            sequence_tiles.push([array[i-1]]);
-            sequence_tiles.push([array[i]]);
+            sequence_tiles.push(array[i-2]);
+            sequence_tiles.push(array[i-1]);
+            sequence_tiles.push(array[i]);
         }
     }
 
-    console.log(grouped_sequences);
-    console.log(sequence_tiles.filter((value, index, self) => self.indexOf(value) === index));
-
-    return grouped_sequences, sequence_tiles;
+    return [grouped_sequences, sequence_tiles.filter((value, index, self) => self.indexOf(value) === index)];
 }
 
 function check_pairs(array) {
@@ -88,9 +83,7 @@ function check_pairs(array) {
         }
     }
 
-    console.log(pairs.filter((value, index, self) => self.indexOf(value) === index));
-
-    return pairs;
+    return pairs.filter((value, index, self) => self.indexOf(value) === index);;
 }
 
 function check_incomplete_sequence(array) {
@@ -105,28 +98,39 @@ function check_incomplete_sequence(array) {
         }
     }
 
-    console.log(grouped_incomplete_sequences);
-    console.log(incomplete_sequence_tiles.filter((value, index, self) => self.indexOf(value) === index));
-
-    return grouped_incomplete_sequences, incomplete_sequence_tiles;
+    return [grouped_incomplete_sequences, incomplete_sequence_tiles.filter((value, index, self) => self.indexOf(value) === index)];
 }
 
 function pick_discard_tile(array) {
-    let useful = check_triplets(array).concat(check_sequence(array)[1], check_pairs(array), check_incomplete_sequence(array)[1]);
-    console.log(useful);
+    let triplets = check_triplets(array);
+    let sequences = check_sequence(array)[1];
+    let pairs = check_pairs(array);
+    let incomplete_sequences = check_incomplete_sequence(array)[1]
+
+    let useful = triplets.concat(sequences, pairs, incomplete_sequences).filter((value, index, self) => self.indexOf(value) === index);
+
     let not_useful = []
 
     for (let i = 0; i < array.length; i++) {
-        if (!(array[i] in useful)) {
-            not_useful.push(i)
+        if (!useful.includes(array[i])) {
+            not_useful.push(array[i])
         }
     }
-    console.log(not_useful)
+
+    if (not_useful.length === 1) {
+        return not_useful[0]
+    } else {
+        shuffle(not_useful)
+        return not_useful[0]
+        // eventually, should discard the one that has been played the most already ie the least risky tile but idk maybe some 
+        // if not_useful is empty, should discard from sequence that is a single possibility (1, 3) 
+        // PRIORITIZE GETTING RID OF 1 OR 9 FOR THESE CASES otherwise, check for least risky/least likely tile
+    }
 }
 
 setup();
-check_triplets([1, 1, 1, 1, 2, 2, 3, 4]);
-console.log('bleh', check_sequence([1, 1, 1, 2, 3, 4]));
-check_pairs([1, 1, 4, 5, 7, 9, 9, 9]);
-check_incomplete_sequence([1, 2, 5, 5, 9, 11, 12]);
-pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52])
+console.log(check_triplets([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+console.log(check_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+console.log(check_pairs([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+console.log(check_incomplete_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
