@@ -6,6 +6,14 @@ let possible_tiles = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
     31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
 ];
 
+const tile_data = await d3.csv('tiles.csv', (row) => ({
+      id: Number(row.id), // or just +row.line
+      tile: String(row.tile),
+      desc: String(row.tile),
+      img_path: String(row.img_path)
+}));
+
+console.log('Tile Data: ', tile_data);
 
 function setup() {
     let wall = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
@@ -16,14 +24,14 @@ function setup() {
 
     shuffle(wall);
 
-    console.log(possible_tiles);
-    console.log(wall);
-    console.log(sort(wall));
+    console.log('All Possible Tiles: ', possible_tiles);
+    console.log('Wall: ', wall);
 
     let player_hand = [];
     let player_called_tiles = [];
     let enemy_hand = [];
     let enemy_called_tiles = [];
+    
 }
 
 function shuffle(array) {
