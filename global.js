@@ -10,7 +10,6 @@ let player_hand = document.getElementById('playerHand');
 let enemy_hand = document.getElementById('enemyHand');
 
 const tile_data = await d3.csv('tiles.csv', (row) => ({
-      id: Number(row.id), // or just +row.line
       tile: String(row.tile),
       desc: String(row.tile),
       img_path: String(row.img_path),
@@ -18,7 +17,6 @@ const tile_data = await d3.csv('tiles.csv', (row) => ({
 }));
 
 console.log('Tile Data: ', tile_data);
-
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -40,74 +38,84 @@ function sort(array) {
     array.sort(function(a, b){return a - b});
 }
 
-function check_triplets(array) {
+function check_triplets(hand) {
     let triplets = [];
 
     for (let i = 2; i < array.length; i++) {
-        if (array[i-2] === array[i-1] && array[i-1] === array[i]) {
-            triplets.push(array[i]);
+        if (hand[i-2] === hand[i-1] && hand[i-1] === hand[i]) {
+            triplets.push(hand[i]);
         }
     }
 
     return triplets.filter((value, index, self) => self.indexOf(value) === index);
 }
 
-function check_sequence(array) {
+function check_sequence(hand) {
     let grouped_sequences = [];
     let sequence_tiles = [];
 
-    for (let i = 2; i < array.length; i++) {
-        if (array[i-2] === (array[i-1] - 1) && array[i-1] === (array[i] - 1)) {
-            grouped_sequences.push([array[i-2], array[i-1], array[i]]);
-            sequence_tiles.push(array[i-2]);
-            sequence_tiles.push(array[i-1]);
-            sequence_tiles.push(array[i]);
+    for (let i = 2; i < hand.length; i++) {
+        if (hand[i-2] === (hand[i-1] - 1) && hand[i-1] === (hand[i] - 1)) {
+            grouped_sequences.push([hand[i-2], hand[i-1], hand[i]]);
+            sequence_tiles.push(hand[i-2]);
+            sequence_tiles.push(hand[i-1]);
+            sequence_tiles.push(hand[i]);
         }
     }
 
     return [grouped_sequences, sequence_tiles.filter((value, index, self) => self.indexOf(value) === index)];
 }
 
-function check_pairs(array) {
+function check_pairs(hand) {
     let pairs = [];
 
-    for (let i = 1; i < array.length; i++) {
-        if (array[i-1] === array[i]) {
-            pairs.push(array[i])
+    for (let i = 1; i < hand.length; i++) {
+        if (hand[i-1] === hand[i]) {
+            pairs.push(hand[i])
         }
     }
 
-    return pairs.filter((value, index, self) => self.indexOf(value) === index);;
+    return pairs.filter((value, index, self) => self.indexOf(value) === index);
 }
 
-function check_incomplete_sequence(array) {
+// make sure the values in the array for checking pairs are not in a hidden triplet
+// maybe combine all of them into one function so filter can be used with the necessary variables?
+
+function check_incomplete_sequence(hand) {
     let grouped_incomplete_sequences = [];
     let incomplete_sequence_tiles = [];
 
-    for (let i = 1; i < array.length; i++) {
-        if (array[i-1] === (array[i] - 1) || array[i-1] === (array[i] - 2)) {
-            grouped_incomplete_sequences.push([array[i-1], array[i]]);
-            incomplete_sequence_tiles.push(array[i-1]);
-            incomplete_sequence_tiles.push(array[i]);
+    for (let i = 1; i < hand.length; i++) {
+        if (hand[i-1] === (hand[i] - 1) || hand[i-1] === (hand[i] - 2)) {
+            grouped_incomplete_sequences.push([hand[i-1], hand[i]]);
+            incomplete_sequence_tiles.push(hand[i-1]);
+            incomplete_sequence_tiles.push(hand[i]);
         }
     }
 
     return [grouped_incomplete_sequences, incomplete_sequence_tiles.filter((value, index, self) => self.indexOf(value) === index)];
 }
 
-function pick_discard_tile(array) {
-    let triplets = check_triplets(array);
-    let sequences = check_sequence(array)[1];
-    let pairs = check_pairs(array);
-    let incomplete_sequences = check_incomplete_sequence(array)[1]
+// make sure the values in the array for checking pairs are not in a hidden sequence
+// maybe combine all of them into one function so filter can be used with the necessary variables?
+
+// function check_hand(hand) {
+//     return;
+// }
+
+function pick_discard_tile(hand) {
+    let triplets = check_triplets(hand);
+    let sequences = check_sequence(hand)[1];
+    let pairs = check_pairs(hand);
+    let incomplete_sequences = check_incomplete_sequence(hand)[1]
 
     let useful = triplets.concat(sequences, pairs, incomplete_sequences).filter((value, index, self) => self.indexOf(value) === index);
 
     let not_useful = []
 
-    for (let i = 0; i < array.length; i++) {
-        if (!useful.includes(array[i])) {
-            not_useful.push(array[i])
+    for (let i = 0; i < hand.length; i++) {
+        if (!useful.includes(hand[i])) {
+            not_useful.push(hand[i])
         }
     }
 
@@ -160,6 +168,12 @@ function setup() {
             document.getElementById(tile_id).addEventListener('click', function () {
                 console.log(`CLICKED ON ${this.id}`);
             })
+            document.getElementById(tile_id).addEventListener('mouseover', function () {
+                this.style.fontSize = "200%";
+            })
+            document.getElementById(tile_id).addEventListener('mouseleave', function () {
+                this.style.fontSize = "100%";
+            })
         }
 
         for (let i = 2; i < 27; i+=2) {
@@ -170,6 +184,12 @@ function setup() {
             enemy_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
             document.getElementById(tile_id).addEventListener('click', function () {
                 console.log(`CLICKED ON ${this.id}`);
+            })
+            document.getElementById(tile_id).addEventListener('mouseover', function () {
+                this.style.fontSize = "200%";
+            })
+            document.getElementById(tile_id).addEventListener('mouseleave', function () {
+                this.style.fontSize = "100%";
             })
         }
     } else {
@@ -182,16 +202,28 @@ function setup() {
             document.getElementById(tile_id).addEventListener('click', function () {
                 console.log(`CLICKED ON ${this.id}`);
             })
+            document.getElementById(tile_id).addEventListener('mouseover', function () {
+                this.style.fontSize = "200%";
+            })
+            document.getElementById(tile_id).addEventListener('mouseleave', function () {
+                this.style.fontSize = "100%";
+            })
         }
 
         for (let i = 2; i < 27; i+=2) {
             to_insert = wall[tiles_remaining-i];
-            tile_id = 'player' + tile_data[to_insert].tile + String(tile_data[to_insert].count)
+            tile_id = 'player' + tile_data[to_insert].tile + String(tile_data[to_insert].count);
             tile_data[to_insert].count--;
             player_tiles.push(to_insert);
-            player_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
+            player_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`);
             document.getElementById(tile_id).addEventListener('click', function () {
                 console.log(`CLICKED ON ${this.id}`);
+            });
+            document.getElementById(tile_id).addEventListener('mouseover', function () {
+                this.style.fontSize = "200%";
+            })
+            document.getElementById(tile_id).addEventListener('mouseleave', function () {
+                this.style.fontSize = "100%";
             })
         }
     };
@@ -206,11 +238,37 @@ function setup() {
     console.log('enemy hand', enemy_tiles);
 }
 
+function draw(hand) {
+    return;
+}
+
+function discard(tile) {
+    return;
+}
+
+function check_triplet(tile) {
+    return;
+}
+
+function check_sequence(tile) {
+    return;
+}
+
+function check_quad(tile) {
+    return;
+}
+
+function check_tsumo(hand) {
+    return;
+}
+
+function check_ron(tile) {
+    return;
+}
+
 setup();
 console.log(check_triplets([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_pairs([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_incomplete_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
-
-console.log('a', tile_data[0])

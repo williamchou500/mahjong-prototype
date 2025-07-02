@@ -1,35 +1,35 @@
-,id,tile,desc,img_path,count
-0,0,1m,1 of Characters,1m.png,4
-1,1,2m,2 of Characters,2m.png,4
-2,2,3m,3 of Characters,3m.png,4
-3,3,4m,4 of Characters,4m.png,4
-4,4,5m,5 of Characters,5m.png,4
-5,5,6m,6 of Characters,6m.png,4
-6,6,7m,7 of Characters,7m.png,4
-7,7,8m,8 of Characters,8m.png,4
-8,8,9m,9 of Characters,9m.png,4
-9,9,1c,1 of Circles,1c.png,4
-10,10,2c,2 of Circles,2c.png,4
-11,11,3c,3 of Circles,3c.png,4
-12,12,4c,4 of Circles,4c.png,4
-13,13,5c,5 of Circles,5c.png,4
-14,14,6c,6 of Circles,6c.png,4
-15,15,7c,7 of Circles,7c.png,4
-16,16,8c,8 of Circles,8c.png,4
-17,17,9c,9 of Circles,9c.png,4
-18,18,1b,1 of Bamboo,1b.png,4
-19,19,2b,2 of Bamboo,2b.png,4
-20,20,3b,3 of Bamboo,3b.png,4
-21,21,4b,4 of Bamboo,4b.png,4
-22,22,5b,5 of Bamboo,5b.png,4
-23,23,6b,6 of Bamboo,6b.png,4
-24,24,7b,7 of Bamboo,7b.png,4
-25,25,8b,8 of Bamboo,8b.png,4
-26,26,9b,9 of Bamboo,9b.png,4
-27,27,rd,Red Dragon,rd.png,4
-28,28,gd,Green Dragon,gd.png,4
-29,29,wd,White Dragon,wd.png,4
-30,30,e,East Wind,e.png,4
-31,31,s,South Wind,s.png,4
-32,32,w,West Wind,w.png,4
-33,33,n,North Wind,n.png,4
+,tile,desc,img_path,count
+0,1m,1 of Characters,1m.png,4
+1,2m,2 of Characters,2m.png,4
+2,3m,3 of Characters,3m.png,4
+3,4m,4 of Characters,4m.png,4
+4,5m,5 of Characters,5m.png,4
+5,6m,6 of Characters,6m.png,4
+6,7m,7 of Characters,7m.png,4
+7,8m,8 of Characters,8m.png,4
+8,9m,9 of Characters,9m.png,4
+9,1c,1 of Circles,1c.png,4
+10,2c,2 of Circles,2c.png,4
+11,3c,3 of Circles,3c.png,4
+12,4c,4 of Circles,4c.png,4
+13,5c,5 of Circles,5c.png,4
+14,6c,6 of Circles,6c.png,4
+15,7c,7 of Circles,7c.png,4
+16,8c,8 of Circles,8c.png,4
+17,9c,9 of Circles,9c.png,4
+18,1b,1 of Bamboo,1b.png,4
+19,2b,2 of Bamboo,2b.png,4
+20,3b,3 of Bamboo,3b.png,4
+21,4b,4 of Bamboo,4b.png,4
+22,5b,5 of Bamboo,5b.png,4
+23,6b,6 of Bamboo,6b.png,4
+24,7b,7 of Bamboo,7b.png,4
+25,8b,8 of Bamboo,8b.png,4
+26,9b,9 of Bamboo,9b.png,4
+27,rd,Red Dragon,rd.png,4
+28,gd,Green Dragon,gd.png,4
+29,wd,White Dragon,wd.png,4
+30,e,East Wind,e.png,4
+31,s,South Wind,s.png,4
+32,w,West Wind,w.png,4
+33,n,North Wind,n.png,4
