@@ -41,7 +41,7 @@ function sort(array) {
 function check_triplets(hand) {
     let triplets = [];
 
-    for (let i = 2; i < array.length; i++) {
+    for (let i = 2; i < hand.length; i++) {
         if (hand[i-2] === hand[i-1] && hand[i-1] === hand[i]) {
             triplets.push(hand[i]);
         }
