@@ -1,0 +1,22 @@
+body {
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+}
+
+#enemyHand {
+    display: flex;
+    max-width: 800px;
+    margin: auto
+}
+
+#playerHand {
+    display: flex;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+p {
+    margin: auto;
+}

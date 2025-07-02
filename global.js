@@ -6,33 +6,19 @@ let possible_tiles = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
     31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
 ];
 
+let player_hand = document.getElementById('playerHand');
+let enemy_hand = document.getElementById('enemyHand');
+
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       id: Number(row.id), // or just +row.line
       tile: String(row.tile),
       desc: String(row.tile),
-      img_path: String(row.img_path)
+      img_path: String(row.img_path),
+      count: Number(row.count)
 }));
 
 console.log('Tile Data: ', tile_data);
 
-function setup() {
-    let wall = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
-        11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20,
-        21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30,
-        31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
-    ];
-
-    shuffle(wall);
-
-    console.log('All Possible Tiles: ', possible_tiles);
-    console.log('Wall: ', wall);
-
-    let player_hand = [];
-    let player_called_tiles = [];
-    let enemy_hand = [];
-    let enemy_called_tiles = [];
-    
-}
 
 function shuffle(array) {
   let currentIndex = array.length;
@@ -51,7 +37,7 @@ function shuffle(array) {
 };
 
 function sort(array) {
-    return array.sort(function(a, b){return a - b})
+    array.sort(function(a, b){return a - b});
 }
 
 function check_triplets(array) {
@@ -136,9 +122,95 @@ function pick_discard_tile(array) {
     }
 }
 
+function setup() {
+    let wall = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
+        11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20,
+        21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30,
+        31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
+    ];
+
+    shuffle(wall);
+
+    console.log('All Possible Tiles: ', possible_tiles);
+    console.log('Wall: ', wall);
+
+    let player_tiles = [];
+    let player_called_tiles = [];
+    let enemy_tiles = [];
+    let enemy_called_tiles = [];
+
+    let turns = ['player', 'enemy'];
+    shuffle(turns);
+
+    let first_turn = turns[0]; 
+    let curr_turn = turns[0];
+
+    let tiles_remaining = wall.length
+
+    let to_insert;
+    let tile_id;
+
+    if (first_turn === 'player') {
+        for (let i = 1; i < 27; i+=2) {
+            to_insert = wall[tiles_remaining-i];
+            tile_id = 'player' + tile_data[to_insert].tile + String(tile_data[to_insert].count)
+            tile_data[to_insert].count--;
+            player_tiles.push(to_insert);
+            player_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
+            document.getElementById(tile_id).addEventListener('click', function () {
+                console.log(`CLICKED ON ${this.id}`);
+            })
+        }
+
+        for (let i = 2; i < 27; i+=2) {
+            to_insert = wall[tiles_remaining-i];
+            tile_id = 'enemy' + tile_data[to_insert].tile + String(tile_data[to_insert].count)
+            tile_data[to_insert].count--;
+            enemy_tiles.push(to_insert);
+            enemy_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
+            document.getElementById(tile_id).addEventListener('click', function () {
+                console.log(`CLICKED ON ${this.id}`);
+            })
+        }
+    } else {
+        for (let i = 1; i < 27; i+=2) {
+            to_insert = wall[tiles_remaining-i];
+            tile_id = 'enemy' + tile_data[to_insert].tile + String(tile_data[to_insert].count)
+            tile_data[to_insert].count--;
+            enemy_tiles.push(to_insert);
+            enemy_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
+            document.getElementById(tile_id).addEventListener('click', function () {
+                console.log(`CLICKED ON ${this.id}`);
+            })
+        }
+
+        for (let i = 2; i < 27; i+=2) {
+            to_insert = wall[tiles_remaining-i];
+            tile_id = 'player' + tile_data[to_insert].tile + String(tile_data[to_insert].count)
+            tile_data[to_insert].count--;
+            player_tiles.push(to_insert);
+            player_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[to_insert].tile}</p>`)
+            document.getElementById(tile_id).addEventListener('click', function () {
+                console.log(`CLICKED ON ${this.id}`);
+            })
+        }
+    };
+
+    wall = wall.slice(0, tiles_remaining-26)
+    console.log('wall after hand formation', wall)
+
+    sort(player_tiles);
+    sort(enemy_tiles);
+
+    console.log('player hand', player_tiles);
+    console.log('enemy hand', enemy_tiles);
+}
+
 setup();
 console.log(check_triplets([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_pairs([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(check_incomplete_sequence([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+
+console.log('a', tile_data[0])
