@@ -246,23 +246,23 @@ function discard(tile) {
     return;
 }
 
-function check_triplet(tile) {
+function call_triplet(tile) {
     return;
 }
 
-function check_sequence(tile) {
+function call_sequence(tile) {
     return;
 }
 
-function check_quad(tile) {
+function call_quad(tile) {
     return;
 }
 
-function check_tsumo(hand) {
+function call_tsumo(hand) {
     return;
 }
 
-function check_ron(tile) {
+function call_ron(tile) {
     return;
 }
 
