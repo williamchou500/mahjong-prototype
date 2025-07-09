@@ -227,7 +227,11 @@ document.getElementById('drawTileBtn').addEventListener('click', function() {
 })
 
 document.getElementById('discardTileBtn').addEventListener('click', function() {
-    player_discard();
+    if (player_tiles.length + player_called_tiles - player_called_quads > 13) {
+        player_discard();
+    } else {
+        console.log('DRAW A TILE')
+    }
 })
 
 function setup() {
@@ -335,6 +339,8 @@ function player_discard() {
         player_discards.insertAdjacentHTML('beforeend', `<p>${tile_data[discard_data.id].tile}</p>`)
         document.getElementById(discard_data.id).remove();
         player_tiles.splice(player_tiles.indexOf(discard_data.id), 1);
+    } else {
+        console.log('INVALID AMOUNT OF TILES SELECTED')
     }
     return;
 }
