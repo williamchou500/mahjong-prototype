@@ -1,10 +1,16 @@
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
-let possible_tiles = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
-    11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20,
-    21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30,
-    31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
-];
+let possible_tiles = [  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
+        13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
+        26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+        39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,
+        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,
+        65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,
+        78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,
+        91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101, 102, 103,
+       104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
+       117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+       130, 131, 132, 133, 134, 135];
 
 let wall;
 
@@ -31,8 +37,7 @@ let to_insert;
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
       desc: String(row.desc),
-      img_path: String(row.img_path),
-      count: Number(row.count)
+      img_path: String(row.img_path)
 }));
 
 console.log('Tile Data: ', tile_data);
@@ -147,11 +152,9 @@ function pick_discard_tile(hand) {
 
 function form_player_hand(hand) {
     player_hand.innerHTML = '';
-    let tile_id;
     for (let i = 0; i < hand.length; i++) {
-        tile_id= String(hand[i]) + 'player' + tile_data[hand[i]].tile + String(tile_data[hand[i]].count)
-        player_hand.insertAdjacentHTML('beforeend', `<p tile_id=${hand[i]} tile=${tile_data[hand[i]].tile} id=${tile_id}>${tile_data[hand[i]].tile}</p>`)
-        document.getElementById(tile_id).addEventListener('click', function () {
+        player_hand.insertAdjacentHTML('beforeend', `<p id=${hand[i]}>${tile_data[hand[i]].tile}</p>`)
+        document.getElementById(hand[i]).addEventListener('click', function () {
             console.log(`CLICKED ON ${this.id}`);
             if (this.classList.length === 0) {
                 this.classList.add('selected');
@@ -161,12 +164,12 @@ function form_player_hand(hand) {
                 this.style.fontSize = "100%";
             }
         })
-        document.getElementById(tile_id).addEventListener('mouseover', function () {
+        document.getElementById(hand[i]).addEventListener('mouseover', function () {
             if (this.classList.length === 0) {
                 this.style.fontSize = "200%";
             }
         })
-        document.getElementById(tile_id).addEventListener('mouseleave', function () {
+        document.getElementById(hand[i]).addEventListener('mouseleave', function () {
             if (this.classList.length === 0) {
                 this.style.fontSize = "100%";
             }
@@ -178,20 +181,18 @@ function form_player_hand(hand) {
 
 function form_enemy_hand(hand) {
     enemy_hand.innerHTML = '';
-    let tile_id;
 
     for (let i = 0; i < hand.length; i++) {
-        tile_id= 'enemy' + tile_data[hand[i]].tile + String(tile_data[hand[i]].count)
-        enemy_hand.insertAdjacentHTML('beforeend', `<p id=${tile_id}>${tile_data[hand[i]].tile}</p>`)
-        document.getElementById(tile_id).addEventListener('click', function () {
+        enemy_hand.insertAdjacentHTML('beforeend', `<p id=${hand[i]}>${tile_data[hand[i]].tile}</p>`)
+        document.getElementById(hand[i]).addEventListener('click', function () {
             console.log(`CLICKED ON ${this.id}`);
         })
-        document.getElementById(tile_id).addEventListener('mouseover', function () {
+        document.getElementById(hand[i]).addEventListener('mouseover', function () {
             if (this.classList.length === 0) {
                 this.style.fontSize = "200%";
             }
         })
-        document.getElementById(tile_id).addEventListener('mouseleave', function () {
+        document.getElementById(hand[i]).addEventListener('mouseleave', function () {
             if (this.classList.length === 0) {
                 this.style.fontSize = "100%";
             }
@@ -213,11 +214,17 @@ document.getElementById('discardTileBtn').addEventListener('click', function() {
 })
 
 function setup() {
-    wall = [1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
-        11, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15, 16, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 19, 20, 20, 20, 20,
-        21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24, 24, 25, 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 28, 29, 29, 29, 29, 30, 30, 30, 30,
-        31, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33, 33
-    ];
+    wall = [  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
+        13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
+        26,  27,  28,  29,  30,  31,  32,  33,  34,  35,  36,  37,  38,
+        39,  40,  41,  42,  43,  44,  45,  46,  47,  48,  49,  50,  51,
+        52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,  64,
+        65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,
+        78,  79,  80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,
+        91,  92,  93,  94,  95,  96,  97,  98,  99, 100, 101, 102, 103,
+       104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116,
+       117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129,
+       130, 131, 132, 133, 134, 135];
 
     shuffle(wall);
 
@@ -241,6 +248,7 @@ function setup() {
             tiles_remaining--;
         }
 
+        sort(player_tiles);
         form_player_hand(player_tiles);
 
         for (let i = 2; i < 27; i+=2) {
@@ -250,6 +258,7 @@ function setup() {
             tiles_remaining--;
         }
 
+        sort(enemy_tiles);
         form_enemy_hand(enemy_tiles);
 
     } else {
@@ -260,6 +269,7 @@ function setup() {
             tiles_remaining--;
         }
 
+        sort(enemy_tiles);
         form_enemy_hand(enemy_tiles);
 
         for (let i = 2; i < 27; i+=2) {
@@ -269,6 +279,7 @@ function setup() {
             tiles_remaining--;
         }
 
+        sort(player_tiles);
         form_player_hand(player_tiles);
 
     };
@@ -302,13 +313,11 @@ function enemy_draw(tile, hand) {
 
 function player_discard() {
     let to_discard = document.getElementsByClassName('selected');
-    console.log(to_discard[0]);
-
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
-        player_discards.insertAdjacentHTML('beforeend', `<p>${discard_data.tile}</p>`)
+        player_discards.insertAdjacentHTML('beforeend', `<p>${tile_data[discard_data.id].tile}</p>`)
         document.getElementById(discard_data.id).remove();
-        player_tiles.splice(player_tiles.indexOf(discard_data.tile_id), 1);
+        player_tiles.splice(player_tiles.indexOf(discard_data.id), 1);
     }
     return;
 }
