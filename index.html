@@ -10,9 +10,19 @@
 <body>
     <h1>MAHJONGALONG</h1>
 
-    <div id="enemyHand"></div>
-    <div id="enemyDiscards"></div>
-    <div id="playerDiscards"></div>
-    <div id="playerHand"></div>
+    <div id="enemySide">
+        <div id="enemyHand"></div>
+        <div id="enemyCalledTiles"></div>
+        <div id="enemyDiscards"></div>
+    </div>
+
+    <div id="playerSide">
+        <div id="playerDiscards"></div>
+        <div id="playerCalledTiles"></div>
+        <div id="playerHand"></div>
+    </div>
+
+    <button id="drawTileBtn">Draw Tile</button>
+    <button id="discardTileBtn">Discard Tile</button>
 </body>
 </html>
