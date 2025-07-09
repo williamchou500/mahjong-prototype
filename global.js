@@ -37,7 +37,9 @@ let to_insert;
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
       desc: String(row.desc),
-      img_path: String(row.img_path)
+      img_path: String(row.img_path),
+      tile_id: row.tile_id,
+      category: row.category
 }));
 
 console.log('Tile Data: ', tile_data);
@@ -66,7 +68,7 @@ function check_triplets(hand) {
     let triplets = [];
 
     for (let i = 2; i < hand.length; i++) {
-        if (hand[i-2] === hand[i-1] && hand[i-1] === hand[i]) {
+        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
             triplets.push(hand[i]);
         }
     }
@@ -78,7 +80,7 @@ function check_sequence(hand) {
     let sequence_tiles = [];
 
     for (let i = 2; i < hand.length; i++) {
-        if (hand[i-2] === (hand[i-1] - 1) && hand[i-1] === (hand[i] - 1)) {
+        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id - 1 && tile_data[hand[i-1]].tile_id === tile_data[hand[i]] - 1 && tile_data[hand[i-2]].category === tile_data[hand[i-1]].category && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]])) {
             sequence_tiles.push(hand[i-2]);
             sequence_tiles.push(hand[i-1]);
             sequence_tiles.push(hand[i]);
@@ -92,7 +94,7 @@ function check_pairs(hand) {
     let pairs = [];
 
     for (let i = 1; i < hand.length; i++) {
-        if (hand[i-1] === hand[i]) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
             pairs.push(hand[i])
         }
     }
@@ -104,7 +106,7 @@ function check_incomplete_sequence(hand) {
     let incomplete_sequences = [];
 
     for (let i = 1; i < hand.length; i++) {
-        if (hand[i-1] === (hand[i] - 1) || hand[i-1] === (hand[i] - 2)) {
+        if ((tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) || (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category))) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
         }
@@ -315,7 +317,7 @@ function player_discard() {
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
-        player_discards.insertAdjacentHTML('beforeend', `<p>${tile_data[discard_data.id].tile}</p>`)
+        player_discards.insertAdjacentHTML('beforeend', `<p id=${discard_data.id}>${tile_data[discard_data.id].tile}</p>`)
         document.getElementById(discard_data.id).remove();
         player_tiles.splice(player_tiles.indexOf(discard_data.id), 1);
     }
@@ -398,3 +400,6 @@ console.log('tsumo check 1: ', check_tsumo([1,1,2,2,3,3,4,4,5,5,6,6,7,7]));
 console.log('tsumo check 2: ', check_tsumo([1,2,3,5,5,5,7,8,9,19,19,19,25,25]));
 
 console.log('tsumo check 3: ', check_tsumo([2,2,3,5,5,5,7,8,9,19,19,19,25,25]));
+
+
+console.log(check_incomplete_sequence([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]))
