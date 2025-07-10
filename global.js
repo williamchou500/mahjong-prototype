@@ -33,6 +33,8 @@ let first_turn;
 let curr_turn;
 let tiles_remaining;
 let to_insert;
+let player_recently_discarded;
+let enemy_recently_discarded;
 
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
@@ -158,12 +160,23 @@ function pick_discard_tile(hand) {
 
     if (not_useful.length === 1) {
         return not_useful[0]
-    } else {
+    } else if (not_useful.length > 1) {
         shuffle(not_useful)
         return not_useful[0]
         // eventually, should discard the one that has been played the most already ie the least risky tile but idk maybe some 
         // if not_useful is empty, should discard from sequence that is a single possibility (1, 3) 
         // PRIORITIZE GETTING RID OF 1 OR 9 FOR THESE CASES otherwise, check for least risky/least likely tile
+    } else if (not_useful.length === 0) {
+        shuffle(categorized_useful[0]);
+        shuffle(categorized_useful[1]);
+        shuffle(categorized_useful[2]);
+        shuffle(categorized_useful[3]);
+
+        for (let i = 3; i > -1; i--) {
+            if (categorized_useful[i].length != 0) {
+                return categorized_useful[i][0];
+            }
+        }
     }
 }
 
@@ -217,7 +230,7 @@ function form_enemy_hand(hand) {
     }
 }
 
-document.getElementById('drawTileBtn').addEventListener('click', function() {
+document.getElementById('playerDrawTileBtn').addEventListener('click', function() {
     if (player_tiles.length + player_called_tiles - player_called_quads <= 13) {
         player_draw(player_tiles);
         form_player_hand(player_tiles);
@@ -226,11 +239,68 @@ document.getElementById('drawTileBtn').addEventListener('click', function() {
     }
 })
 
-document.getElementById('discardTileBtn').addEventListener('click', function() {
+document.getElementById('playerDiscardTileBtn').addEventListener('click', function() {
     if (player_tiles.length + player_called_tiles - player_called_quads > 13) {
         player_discard();
     } else {
         console.log('DRAW A TILE')
+    }
+})
+
+document.getElementById('playerTsumoBtn').addEventListener('click', function () {
+    let result = player_check_tsumo(player_tiles);
+
+    if (result === true) {
+        console.log('PLAYER WINS');
+    } else {
+        console.log('PLAYER FALSE ALARM');
+    }
+})
+
+document.getElementById('playerRonBtn').addEventListener('click', function () {
+    let result = player_check_ron(enemy_recently_discarded, player_called_tiles);
+
+    if (result === true) {
+        console.log('PLAYER WINS');
+    } else {
+        console.log('PLAYER FALSE ALARM');
+    }
+})
+
+document.getElementById('enemyDrawTileBtn').addEventListener('click', function() {
+    if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads <= 13) {
+        enemy_draw(enemy_tiles);
+        form_enemy_hand(enemy_tiles);
+    } else {
+        console.log('DISCARD A TILE')
+    }
+})
+
+document.getElementById('enemyDiscardTileBtn').addEventListener('click', function() {
+    if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads > 13) {
+        enemy_discard();
+    } else {
+        console.log('DRAW A TILE')
+    }
+})
+
+document.getElementById('enemyTsumoBtn').addEventListener('click', function () {
+    let result = enemy_check_tsumo(enemy_tiles);
+
+    if (result === true) {
+        console.log('ENEMY WINS');
+    } else {
+        console.log('ENEMY FALSE ALARM');
+    }
+})
+
+document.getElementById('enemyRonBtn').addEventListener('click', function () {
+    let result = enemy_check_ron(player_recently_discarded, enemy_tiles);
+
+    if (result === true) {
+        console.log('ENEMY WINS');
+    } else {
+        console.log('ENEMY FALSE ALARM');
     }
 })
 
@@ -328,7 +398,17 @@ function player_draw(hand) {
     sort(hand);
 }
 
-function enemy_draw(tile, hand) {
+function enemy_draw(hand) {
+    if (tiles_remaining === 0) {
+        end_game();
+        return;
+    }
+
+    let drawn_tile = wall[tiles_remaining-1];
+    wall = wall.slice(0, tiles_remaining-1);
+    tiles_remaining--;
+    hand.push(drawn_tile);
+    sort(hand);
     return;
 }
 
@@ -336,16 +416,24 @@ function player_discard() {
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
-        player_discards.insertAdjacentHTML('beforeend', `<p>${tile_data[discard_data.id].tile}</p>`)
+        player_recently_discarded = discard_data.id;
         document.getElementById(discard_data.id).remove();
-        player_tiles.splice(player_tiles.indexOf(discard_data.id), 1);
+        player_discards.insertAdjacentHTML('beforeend', `<p id=${String(discard_data.id)}>${tile_data[discard_data.id].tile}</p>`);
+        player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
     } else {
-        console.log('INVALID AMOUNT OF TILES SELECTED')
+        console.log('INVALID AMOUNT OF TILES SELECTED');
     }
     return;
 }
 
-function enemy_discard(tile, hand) {
+function enemy_discard() {
+    let to_discard = pick_discard_tile(enemy_tiles);
+    let discard_index = enemy_tiles.indexOf(to_discard);
+    enemy_recently_discarded = to_discard;
+    document.getElementById(to_discard).remove();
+    enemy_discards.insertAdjacentHTML('beforeend', `<p id=${to_discard}>${tile_data[to_discard].tile}</p>`)
+    enemy_tiles.splice(discard_index, 1);
+    console.log(enemy_tiles);
     return;
 }
 
@@ -361,13 +449,17 @@ function call_quad(tile, hand) {
     return;
 }
 
-function check_tsumo(hand) {
+// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
+
+function player_check_tsumo(hand) {
     // after drawing a tile, hand should have 14 tiles
     sort(hand);
 
     let checked = check_hand(hand);
     
-    if (checked[0].length + (checked[1].length/3) === 4 && checked[2].length === 1) {
+    if (hand.length != 14) {
+        return false;
+    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
         return true;
     } else if (checked[2]. length === 7) {
         return true;
@@ -378,7 +470,9 @@ function check_tsumo(hand) {
     // need a if statement for 13 orphans!!!! [0,8,9,17,18,26,27,28,29,30,31,32,33] plus a pair
 }
 
-function check_ron(tile, hand) {
+// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
+
+function player_check_ron(tile, hand) {
     let to_check = hand;
     // needs to be a deep copy eventually
 
@@ -388,7 +482,55 @@ function check_ron(tile, hand) {
 
     let checked = check_hand(to_check);
 
-    if (checked[0].length + (checked[1].length/3) === 4 && checked[2].length === 1) {
+    if (checked.length != 14) {
+        return false;
+    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+        return true;
+    } else if (checked[2]. length === 7) {
+        return true;
+    } else {
+        return false;
+    }
+
+    // need a if statement for 13 orphans!!!!
+}
+
+// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
+
+function enemy_check_tsumo(hand) {
+    // after drawing a tile, hand should have 14 tiles
+    sort(hand);
+
+    let checked = check_hand(hand);
+    
+    if (hand.length != 14) {
+        return false;
+    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+        return true;
+    } else if (checked[2]. length === 7) {
+        return true;
+    } else {
+        return false;
+    }
+
+    // need a if statement for 13 orphans!!!! [0,8,9,17,18,26,27,28,29,30,31,32,33] plus a pair
+}
+
+// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
+
+function enemy_check_ron(tile, hand) {
+    let to_check = hand;
+    // needs to be a deep copy eventually
+
+    to_check.push(tile);
+
+    sort(to_check);
+
+    let checked = check_hand(to_check);
+
+    if (checked.length != 14) {
+        return false;
+    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
         return true;
     } else if (checked[2]. length === 7) {
         return true;
@@ -410,16 +552,4 @@ console.log(check_hand([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
 console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
-console.log('ron check 1: ', check_ron(5, [1,2,3,5,5,7,8,9,19,19,19,25,25]));
-
-console.log('ron check 2: ', check_ron(5, [2,2,3,5,5,7,8,9,19,19,19,25,25]));
-
-console.log('ron check 2: ', check_ron(5, [1,1,2,2,3,3,4,4,5,6,6,7,7]));
-
-console.log('tsumo check 1: ', check_tsumo([1,1,2,2,3,3,4,4,5,5,6,6,7,7]));
-
-console.log('tsumo check 2: ', check_tsumo([1,2,3,5,5,5,7,8,9,19,19,19,25,25]));
-
-console.log('tsumo check 3: ', check_tsumo([2,2,3,5,5,5,7,8,9,19,19,19,25,25]));
-
-console.log(check_incomplete_sequence([2,4,8]))
+console.log(check_incomplete_sequence([2,4,8]));

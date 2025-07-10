@@ -20,3 +20,17 @@ body {
 p {
     margin: auto;
 }
+
+#enemyDiscards {
+    display: flex;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 20px;
+}
+
+#playerDiscards {
+    display: flex;
+    max-width: 800px;
+    margin: auto;
+    margin-top: 20px;
+}
