@@ -429,6 +429,10 @@ function player_discard() {
         document.getElementById(discard_data.id).remove();
         player_discards.insertAdjacentHTML('beforeend', `<p id=${String(discard_data.id)}>${tile_data[discard_data.id].tile}</p>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
+        enemy_check_ron();
+        enemy_draw(enemy_tiles);
+        enemy_check_tsumo();
+        enemy_discard();
     } else {
         console.log('INVALID AMOUNT OF TILES SELECTED');
     }
@@ -469,6 +473,7 @@ function player_check_tsumo(hand=player_tiles) {
     if (hand.length != 14) {
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+        alert('yay u win');
         return true;
     } else if (checked[2]. length === 7) {
         alert('yay u win');
@@ -495,8 +500,10 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
     if (checked.length != 14) {
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+        alert('yay u lose');
         return true;
     } else if (checked[2].length === 7) {
+        alert('yay u lose');
         return true;
     } else {
         return false;
@@ -564,4 +571,4 @@ console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]
 
 console.log(check_sequence([2,4,8]));
 
-console.log(player_check_tsumo([0,4,8,20,21,22,37,38,39,65,66,128,129,130]));
+// console.log(player_check_tsumo([0,4,8,20,21,22,37,38,39,65,66,128,129,130]));
