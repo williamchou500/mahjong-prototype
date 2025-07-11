@@ -87,7 +87,7 @@ function check_sequence(hand) {
 
         // THIS CURRENT PART OF THE CODE DOES NOT REGISTER [b1,b1,b2,b2,b3,b3] AS A COMPLETE SEQUENCE CURRENTLY
 
-        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id - 1 && tile_data[hand[i-1]].tile_id === tile_data[hand[i]] - 1 && tile_data[hand[i-2]].category === tile_data[hand[i-1]].category && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]])) {
+        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id - 1 && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-2]].category === tile_data[hand[i-1]].category && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]])) {
             sequence_tiles.push(hand[i-2]);
             sequence_tiles.push(hand[i-1]);
             sequence_tiles.push(hand[i]);
@@ -382,6 +382,20 @@ function setup() {
     console.log('enemy hand', enemy_tiles);
 }
 
+function player_reset_hand() {
+    player_tiles = wall.splice(-13);
+    tiles_remaining = tiles_remaining-13;
+    sort(player_tiles);
+    form_player_hand(player_tiles);
+}
+
+function enemy_reset_hand() {
+    enemy_tiles = wall.splice(-13);
+    tiles_remaining = tiles_remaining-13;
+    sort(enemy_tiles);
+    form_enemy_hand(enemy_tiles);
+}
+
 function player_draw(hand) {
     if (tiles_remaining === 0) {
         end_game();
@@ -451,21 +465,15 @@ function player_check_tsumo(hand=player_tiles) {
     sort(hand);
 
     let checked = check_hand(hand);
-    console.log(checked);
-    console.log('triplets:', checked[0].length/3 + checked[1].length/3);
-    console.log('pairs', checked[2].length);
     
     if (hand.length != 14) {
-        console.log('wrong length');
         return false;
-    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
-        console.log('normal win');
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
         return true;
     } else if (checked[2]. length === 7) {
-        console.log('7 pairs')
+        alert('yay u win');
         return true;
     } else {
-        console.log('else')
         return false;
     }
 
