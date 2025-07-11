@@ -237,7 +237,6 @@ function form_enemy_hand(hand) {
 document.getElementById('playerDrawTileBtn').addEventListener('click', function() {
     if (player_tiles.length + player_called_tiles - player_called_quads <= 13) {
         player_draw(player_tiles);
-        form_player_hand(player_tiles);
     } else {
         console.log('DISCARD A TILE')
     }
@@ -274,7 +273,6 @@ document.getElementById('playerRonBtn').addEventListener('click', function () {
 document.getElementById('enemyDrawTileBtn').addEventListener('click', function() {
     if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads <= 13) {
         enemy_draw(enemy_tiles);
-        form_enemy_hand(enemy_tiles);
     } else {
         console.log('DISCARD A TILE')
     }
@@ -410,6 +408,7 @@ function player_draw(hand) {
     tiles_remaining--;
     hand.push(drawn_tile);
     sort(hand);
+    form_player_hand(player_tiles);
 }
 
 function enemy_draw(hand) {
@@ -422,6 +421,7 @@ function enemy_draw(hand) {
     tiles_remaining--;
     hand.push(drawn_tile);
     sort(hand);
+    form_enemy_hand(enemy_tiles);
     return;
 }
 
@@ -563,17 +563,21 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     if (checked.length != 14) {
         hand.splice(tile_id, 1);
+        console.log(hand);
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
         alert('yay u lose');
         hand.splice(tile_id, 1);
+        console.log(hand);
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u lose');
         hand.splice(tile_id, 1);
+        console.log(hand);
         return true;
     } else {
         hand.splice(tile_id, 1);
+        console.log(hand);
         return false;
     }
 
