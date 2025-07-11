@@ -238,7 +238,7 @@ document.getElementById('playerDrawTileBtn').addEventListener('click', function(
     if (player_tiles.length + player_called_tiles - player_called_quads <= 13) {
         player_draw(player_tiles);
     } else {
-        console.log('DISCARD A TILE')
+        alert('DISCARD A TILE')
     }
 })
 
@@ -246,7 +246,7 @@ document.getElementById('playerDiscardTileBtn').addEventListener('click', functi
     if (player_tiles.length + player_called_tiles - player_called_quads > 13) {
         player_discard();
     } else {
-        console.log('DRAW A TILE')
+        alert('DRAW A TILE')
     }
 })
 
@@ -274,7 +274,7 @@ document.getElementById('enemyDrawTileBtn').addEventListener('click', function()
     if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads <= 13) {
         enemy_draw(enemy_tiles);
     } else {
-        console.log('DISCARD A TILE')
+        alert('DISCARD A TILE')
     }
 })
 
@@ -282,7 +282,7 @@ document.getElementById('enemyDiscardTileBtn').addEventListener('click', functio
     if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads > 13) {
         enemy_discard();
     } else {
-        console.log('DRAW A TILE')
+        alert('DRAW A TILE')
     }
 })
 
@@ -438,7 +438,7 @@ function player_discard() {
         enemy_check_tsumo();
         enemy_discard();
     } else {
-        console.log('INVALID AMOUNT OF TILES SELECTED');
+        alert('INVALID AMOUNT OF TILES SELECTED');
     }
     return;
 }
@@ -585,7 +585,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 }
 
 function end_game() {
-    console.log('GAME OVER');
+    alert('GAME OVER');
     return;
 }
 
