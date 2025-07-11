@@ -36,6 +36,10 @@ let to_insert;
 let player_recently_discarded;
 let enemy_recently_discarded;
 
+let categorized_useful;
+let useful;
+let not_useful;
+
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
       desc: String(row.desc),
@@ -142,13 +146,13 @@ function check_hand(hand) {
 }
 
 function pick_discard_tile(hand) {
-    let categorized_useful = check_hand(hand);
-    let useful = [...categorized_useful[0], ...categorized_useful[1], ...categorized_useful[2], ...categorized_useful[3]]; 
+    categorized_useful = check_hand(hand);
+    useful = [...categorized_useful[0], ...categorized_useful[1], ...categorized_useful[2], ...categorized_useful[3]]; 
 
     console.log('hand: ', hand);
     console.log('useful tiles: ', useful)
 
-    let not_useful = []
+    not_useful = []
 
     for (let i = 0; i < hand.length; i++) {
         if (!useful.includes(hand[i])) {
@@ -441,7 +445,11 @@ function player_discard() {
 
 function enemy_discard() {
     let to_discard = pick_discard_tile(enemy_tiles);
+    console.log('enemy discarded: ', to_discard);
+    console.log(document.getElementById(to_discard));
+    console.log(document.getElementById('enemyHand'));
     let discard_index = enemy_tiles.indexOf(to_discard);
+    console.log(discard_index);
     enemy_recently_discarded = to_discard;
     document.getElementById(to_discard).remove();
     enemy_discards.insertAdjacentHTML('beforeend', `<p id=${to_discard}>${tile_data[to_discard].tile}</p>`)
@@ -495,17 +503,23 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
 
     sort(to_check);
 
+    let tile_id = hand.indexOf(tile);
+
     let checked = check_hand(to_check);
 
     if (checked.length != 14) {
+        hand.splice(tile_id, 1);
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
         alert('yay u lose');
+        hand.splice(tile_id, 1);
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u lose');
+        hand.splice(tile_id, 1);
         return true;
     } else {
+        hand.splice(tile_id, 1);
         return false;
     }
 
@@ -543,15 +557,23 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     sort(to_check);
 
+    let tile_id = hand.indexOf(tile);
+
     let checked = check_hand(to_check);
 
     if (checked.length != 14) {
+        hand.splice(tile_id, 1);
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+        alert('yay u lose');
+        hand.splice(tile_id, 1);
         return true;
-    } else if (checked[2]. length === 7) {
+    } else if (checked[2].length === 7) {
+        alert('yay u lose');
+        hand.splice(tile_id, 1);
         return true;
     } else {
+        hand.splice(tile_id, 1);
         return false;
     }
 
@@ -565,10 +587,10 @@ function end_game() {
 
 setup();
 
-console.log(check_hand([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+// console.log(check_hand([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
-console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
+// console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
-console.log(check_sequence([2,4,8]));
+// console.log(check_sequence([2,4,8]));
 
 // console.log(player_check_tsumo([0,4,8,20,21,22,37,38,39,65,66,128,129,130]));
