@@ -511,11 +511,11 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
         hand.splice(tile_id, 1);
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
-        alert('yay u lose');
+        alert('yay u win');
         hand.splice(tile_id, 1);
         return true;
     } else if (checked[2].length === 7) {
-        alert('yay u lose');
+        alert('yay u win');
         hand.splice(tile_id, 1);
         return true;
     } else {
