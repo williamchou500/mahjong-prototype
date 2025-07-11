@@ -336,7 +336,6 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             player_tiles.push(to_insert);
             tile_data[to_insert].count--;
-            tiles_remaining--;
         }
 
         sort(player_tiles);
@@ -346,18 +345,17 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             enemy_tiles.push(to_insert);
             tile_data[to_insert].count--;
-            tiles_remaining--;
         }
 
         sort(enemy_tiles);
         form_enemy_hand(enemy_tiles);
+        tiles_remaining = tiles_remaining - 26;
 
     } else {
         for (let i = 1; i < 27; i+=2) {
             to_insert = wall[tiles_remaining-i];
             enemy_tiles.push(to_insert);
             tile_data[to_insert].count--;
-            tiles_remaining--;
         }
 
         sort(enemy_tiles);
@@ -367,12 +365,11 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             player_tiles.push(to_insert);
             tile_data[to_insert].count--;
-            tiles_remaining--;
         }
 
         sort(player_tiles);
         form_player_hand(player_tiles);
-
+        tiles_remaining = tiles_remaining - 26;
     };
 
     wall = wall.slice(0, tiles_remaining)
@@ -391,8 +388,7 @@ function player_draw(hand) {
         return;
     }
 
-    let drawn_tile = wall[tiles_remaining-1];
-    wall = wall.slice(0, tiles_remaining-1);
+    let drawn_tile = wall.pop()
     tiles_remaining--;
     hand.push(drawn_tile);
     sort(hand);
@@ -404,8 +400,7 @@ function enemy_draw(hand) {
         return;
     }
 
-    let drawn_tile = wall[tiles_remaining-1];
-    wall = wall.slice(0, tiles_remaining-1);
+    let drawn_tile = wall.pop();
     tiles_remaining--;
     hand.push(drawn_tile);
     sort(hand);
@@ -451,19 +446,26 @@ function call_quad(tile, hand) {
 
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
-function player_check_tsumo(hand) {
+function player_check_tsumo(hand=player_tiles) {
     // after drawing a tile, hand should have 14 tiles
     sort(hand);
 
     let checked = check_hand(hand);
+    console.log(checked);
+    console.log('triplets:', checked[0].length/3 + checked[1].length/3);
+    console.log('pairs', checked[2].length);
     
     if (hand.length != 14) {
+        console.log('wrong length');
         return false;
-    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+        console.log('normal win');
         return true;
     } else if (checked[2]. length === 7) {
+        console.log('7 pairs')
         return true;
     } else {
+        console.log('else')
         return false;
     }
 
@@ -472,7 +474,7 @@ function player_check_tsumo(hand) {
 
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
-function player_check_ron(tile, hand) {
+function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
     let to_check = hand;
     // needs to be a deep copy eventually
 
@@ -484,9 +486,9 @@ function player_check_ron(tile, hand) {
 
     if (checked.length != 14) {
         return false;
-    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
         return true;
-    } else if (checked[2]. length === 7) {
+    } else if (checked[2].length === 7) {
         return true;
     } else {
         return false;
@@ -497,7 +499,7 @@ function player_check_ron(tile, hand) {
 
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
-function enemy_check_tsumo(hand) {
+function enemy_check_tsumo(hand=enemy_tiles) {
     // after drawing a tile, hand should have 14 tiles
     sort(hand);
 
@@ -505,7 +507,7 @@ function enemy_check_tsumo(hand) {
     
     if (hand.length != 14) {
         return false;
-    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length === 1) {
         return true;
     } else if (checked[2]. length === 7) {
         return true;
@@ -518,7 +520,7 @@ function enemy_check_tsumo(hand) {
 
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
-function enemy_check_ron(tile, hand) {
+function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     let to_check = hand;
     // needs to be a deep copy eventually
 
@@ -530,7 +532,7 @@ function enemy_check_ron(tile, hand) {
 
     if (checked.length != 14) {
         return false;
-    } else if (checked[0].length + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length === 1) {
         return true;
     } else if (checked[2]. length === 7) {
         return true;
@@ -552,4 +554,6 @@ console.log(check_hand([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
 console.log(pick_discard_tile([1, 2, 3, 8, 9, 30, 50, 52, 90, 90, 100, 100, 100]));
 
-console.log(check_incomplete_sequence([2,4,8]));
+console.log(check_sequence([2,4,8]));
+
+console.log(player_check_tsumo([0,4,8,20,21,22,37,38,39,65,66,128,129,130]));
