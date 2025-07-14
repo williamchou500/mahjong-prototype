@@ -17,6 +17,7 @@ let wall;
 let player_hand = document.getElementById('playerHand');
 let player_discards = document.getElementById('playerDiscards');
 let player_called_tiles_pile = document.getElementById('playerCalledTiles');
+let player_drawn_tile = document.getElementById('playerDrawnTile');
 let enemy_hand = document.getElementById('enemyHand');
 let enemy_discards = document.getElementById('enemyDiscards');
 let enemy_called_tiles_pile = document.getElementById('playerCalledTiles');
@@ -408,7 +409,29 @@ function player_draw(hand) {
     tiles_remaining--;
     hand.push(drawn_tile);
     sort(hand);
-    form_player_hand(player_tiles);
+    //form_player_hand(player_tiles);
+
+    player_drawn_tile.insertAdjacentHTML('beforeend', `<p id=${drawn_tile}>${tile_data[drawn_tile].tile}</p>`)
+    document.getElementById(drawn_tile).addEventListener('click', function () {
+        console.log(`CLICKED ON ${this.id}`);
+        if (this.classList.length === 0) {
+            this.classList.add('selected');
+            this.style.fontSize = "200%";
+        } else {
+            this.classList.remove('selected');
+            this.style.fontSize = "100%";
+        }
+    })
+    document.getElementById(drawn_tile).addEventListener('mouseover', function () {
+        if (this.classList.length === 0) {
+            this.style.fontSize = "200%";
+        }
+    })
+    document.getElementById(drawn_tile).addEventListener('mouseleave', function () {
+        if (this.classList.length === 0) {
+            this.style.fontSize = "100%";
+        }
+    })   
 }
 
 function enemy_draw(hand) {
@@ -426,6 +449,8 @@ function enemy_draw(hand) {
 }
 
 function player_discard() {
+    console.log('hiiii: ', player_drawn_tile.innerHTML);
+
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
@@ -439,6 +464,11 @@ function player_discard() {
         enemy_discard();
     } else {
         alert('INVALID AMOUNT OF TILES SELECTED');
+    }
+    if (player_drawn_tile.innerHTML) {
+        player_drawn_tile.innerHTML = '';
+        form_player_hand(player_tiles);
+        return;
     }
     return;
 }
