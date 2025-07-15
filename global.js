@@ -141,14 +141,21 @@ function check_hand(hand) {
     let triplets = check_triplets(hand);
     let sequences = check_sequence(hand);
     let pairs = check_pairs(hand).filter((value, index, self) => !triplets.includes(value));
+    pairs = pairs.filter((value, index, self) => !sequences.includes(value));
     let incomplete_sequences = check_incomplete_sequence(hand).filter((value, index, self) => !sequences.includes(value));
+    incomplete_sequences = incomplete_sequences.filter((value, index, self) => !triplets.includes(value));
 
     return [triplets, sequences, pairs, incomplete_sequences];
 }
 
 function pick_discard_tile(hand) {
     categorized_useful = check_hand(hand);
-    useful = [...categorized_useful[0], ...categorized_useful[1], ...categorized_useful[2], ...categorized_useful[3]]; 
+    let triplets = categorized_useful[0];
+    let sequences = categorized_useful[1];
+    let pairs = categorized_useful[2];
+    let incomplete_sequences = categorized_useful[3];
+
+    useful = [...triplets, ...sequences, ...pairs, ...incomplete_sequences];
 
     console.log('hand: ', hand);
     console.log('useful tiles: ', useful)
@@ -563,6 +570,8 @@ function player_check_tsumo(hand=player_tiles) {
     sort(hand);
 
     let checked = check_hand(hand);
+
+    console.log(checked);
     
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         return false;
@@ -675,3 +684,7 @@ function end_game() {
 }
 
 setup();
+
+player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
+wall.push(29);
+form_player_hand(player_tiles);
