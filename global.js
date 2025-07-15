@@ -626,7 +626,7 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
 
     let checked = check_hand(hand);
 
-    if (to_check.length + (player_called_tiles.length - player_called_quads) != 14) {
+    if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         hand.splice(tile_id, 1);
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
@@ -682,7 +682,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     let checked = check_hand(hand);
 
-    if (to_check.length != 14) {
+    if (hand.length != 14) {
         hand.splice(tile_id, 1);
         console.log(hand);
         return false;
