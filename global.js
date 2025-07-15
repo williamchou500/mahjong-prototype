@@ -716,10 +716,3 @@ function end_game() {
 }
 
 setup();
-
-enemy_tiles = [0,1,2, 5,6,7, 9,10,11, 13,14,15, 21];
-form_enemy_hand(enemy_tiles);
-player_tiles[0] = 20;
-form_player_hand(player_tiles);
-wall.push(23);
-wall.push(24);
