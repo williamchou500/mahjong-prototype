@@ -618,16 +618,13 @@ function player_check_tsumo(hand=player_tiles) {
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
 function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
-    let to_check = hand;
-    // needs to be a deep copy eventually
+    hand.push(tile);
 
-    to_check.push(tile);
-
-    sort(to_check);
+    sort(hand);
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = check_hand(to_check);
+    let checked = check_hand(hand);
 
     if (to_check.length + (player_called_tiles.length - player_called_quads) != 14) {
         hand.splice(tile_id, 1);
@@ -677,15 +674,13 @@ function enemy_check_tsumo(hand=enemy_tiles) {
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
 
 function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
-    let to_check = hand;
+    hand.push(tile);
 
-    to_check.push(tile);
-
-    sort(to_check);
+    sort(hand);
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = check_hand(to_check);
+    let checked = check_hand(hand);
 
     if (to_check.length != 14) {
         hand.splice(tile_id, 1);
