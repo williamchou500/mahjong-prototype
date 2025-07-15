@@ -658,7 +658,7 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     
     if (hand.length != 14) {
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
         alert('yay u lose');
         return true;
     } else if (checked[2]. length === 7) {
