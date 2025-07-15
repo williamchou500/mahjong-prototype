@@ -271,42 +271,6 @@ document.getElementById('playerRonBtn').addEventListener('click', function () {
     }
 })
 
-document.getElementById('enemyDrawTileBtn').addEventListener('click', function() {
-    if (enemy_tiles.length + enemy_called_tiles.length - enemy_called_quads <= 13) {
-        enemy_draw(enemy_tiles);
-    } else {
-        alert('DISCARD A TILE')
-    }
-})
-
-document.getElementById('enemyDiscardTileBtn').addEventListener('click', function() {
-    if (enemy_tiles.length + enemy_called_tiles.length - enemy_called_quads > 13) {
-        enemy_discard();
-    } else {
-        alert('DRAW A TILE')
-    }
-})
-
-document.getElementById('enemyTsumoBtn').addEventListener('click', function () {
-    let result = enemy_check_tsumo(enemy_tiles);
-
-    if (result === true) {
-        console.log('ENEMY WINS');
-    } else {
-        console.log('ENEMY FALSE ALARM');
-    }
-})
-
-document.getElementById('enemyRonBtn').addEventListener('click', function () {
-    let result = enemy_check_ron(player_recently_discarded, enemy_tiles);
-
-    if (result === true) {
-        console.log('ENEMY WINS');
-    } else {
-        console.log('ENEMY FALSE ALARM');
-    }
-})
-
 function setup() {
     wall = [  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,
         13,  14,  15,  16,  17,  18,  19,  20,  21,  22,  23,  24,  25,
