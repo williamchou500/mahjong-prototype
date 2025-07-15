@@ -600,7 +600,7 @@ function player_check_tsumo(hand=player_tiles) {
 
     let checked = check_hand(hand);
     
-    if (hand.length != 14) {
+    if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
         alert('yay u win');
@@ -629,7 +629,7 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
 
     let checked = check_hand(to_check);
 
-    if (checked.length != 14) {
+    if (to_check.length + (player_called_tiles.length - player_called_quads) != 14) {
         hand.splice(tile_id, 1);
         return false;
     } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
@@ -661,7 +661,7 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     
     if (hand.length != 14) {
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
         alert('yay u lose');
         return true;
     } else if (checked[2]. length === 7) {
