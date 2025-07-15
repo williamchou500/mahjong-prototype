@@ -7,14 +7,16 @@ body {
 #enemyHand {
     display: flex;
     max-width: 800px;
-    margin: auto
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
 }
 
 #playerHand {
     display: flex;
     max-width: 800px;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 p {
@@ -33,4 +35,18 @@ p {
     max-width: 800px;
     margin: auto;
     margin-top: 20px;
+}
+
+#playerDrawnTile {
+    display: flex;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#playerCalledTiles {
+    display: flex;
+    margin: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
