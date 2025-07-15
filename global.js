@@ -236,7 +236,7 @@ function form_enemy_hand(hand) {
 }
 
 document.getElementById('playerDrawTileBtn').addEventListener('click', function() {
-    if (player_tiles.length + player_called_tiles - player_called_quads <= 13) {
+    if (player_tiles.length + player_called_tiles.length - player_called_quads <= 13) {
         player_draw(player_tiles);
     } else {
         alert('DISCARD A TILE')
@@ -244,7 +244,7 @@ document.getElementById('playerDrawTileBtn').addEventListener('click', function(
 })
 
 document.getElementById('playerDiscardTileBtn').addEventListener('click', function() {
-    if (player_tiles.length + player_called_tiles - player_called_quads > 13) {
+    if (player_tiles.length + player_called_tiles.length - player_called_quads > 13) {
         player_discard();
     } else {
         alert('DRAW A TILE')
@@ -272,7 +272,7 @@ document.getElementById('playerRonBtn').addEventListener('click', function () {
 })
 
 document.getElementById('enemyDrawTileBtn').addEventListener('click', function() {
-    if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads <= 13) {
+    if (enemy_tiles.length + enemy_called_tiles.length - enemy_called_quads <= 13) {
         enemy_draw(enemy_tiles);
     } else {
         alert('DISCARD A TILE')
@@ -280,7 +280,7 @@ document.getElementById('enemyDrawTileBtn').addEventListener('click', function()
 })
 
 document.getElementById('enemyDiscardTileBtn').addEventListener('click', function() {
-    if (enemy_tiles.length + enemy_called_tiles - enemy_called_quads > 13) {
+    if (enemy_tiles.length + enemy_called_tiles.length - enemy_called_quads > 13) {
         enemy_discard();
     } else {
         alert('DRAW A TILE')
