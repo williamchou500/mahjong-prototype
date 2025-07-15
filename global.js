@@ -655,12 +655,17 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     sort(hand);
 
     let checked = check_hand(hand);
+
+    console.log('tsumo_hand', hand);
+    console.log('cats', checked);
     
     if (hand.length != 14) {
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length === 1) {
+    } else if (checked[0].length/3 + checked[1].length/3 === 4 && checked[2].length/2 === 1) {
+        alert('yay u lose');
         return true;
     } else if (checked[2]. length === 7) {
+        alert('yay u lose');
         return true;
     } else {
         return false;
@@ -673,7 +678,6 @@ function enemy_check_tsumo(hand=enemy_tiles) {
 
 function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     let to_check = hand;
-    // needs to be a deep copy eventually
 
     to_check.push(tile);
 
@@ -683,7 +687,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     let checked = check_hand(to_check);
 
-    if (checked.length != 14) {
+    if (to_check.length != 14) {
         hand.splice(tile_id, 1);
         console.log(hand);
         return false;
@@ -712,3 +716,10 @@ function end_game() {
 }
 
 setup();
+
+enemy_tiles = [0,1,2, 5,6,7, 9,10,11, 13,14,15, 21];
+form_enemy_hand(enemy_tiles);
+player_tiles[0] = 20;
+form_player_hand(player_tiles);
+wall.push(23);
+wall.push(24);
