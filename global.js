@@ -440,7 +440,7 @@ function enemy_discard() {
     console.log(discard_index);
     enemy_recently_discarded = to_discard;
     document.getElementById(to_discard).remove();
-    enemy_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[to_discard].img_path}" id=${to_discard} height="80px" border="1px"></img>`)
+    enemy_discards.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[to_discard].img_path}" id=${to_discard} height="80px" border="1px"></img>`)
     enemy_tiles.splice(discard_index, 1);
     console.log(enemy_tiles);
     return;

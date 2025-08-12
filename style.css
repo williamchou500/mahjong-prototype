@@ -25,15 +25,16 @@ p {
 }
 
 #enemyDiscards {
-    display: flex;
-    max-width: 800px;
+    display: inline-block;
+    max-width: 1200px;
     margin: auto;
     margin-top: 20px;
+    
 }
 
 #playerDiscards {
-    display: flex;
-    max-width: 800px;
+    display: inline-block;
+    max-width: 1200px;
     margin: auto;
     margin-top: 20px;
 }
