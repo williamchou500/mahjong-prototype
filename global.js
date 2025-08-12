@@ -195,25 +195,25 @@ function pick_discard_tile(hand) {
 function form_player_hand(hand) {
     player_hand.innerHTML = '';
     for (let i = 0; i < hand.length; i++) {
-        player_hand.insertAdjacentHTML('beforeend', `<p id=${hand[i]}>${tile_data[hand[i]].tile}</p>`)
+        player_hand.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[hand[i]].img_path}" id=${hand[i]} height="80px" border="1px"></img>`)
         document.getElementById(hand[i]).addEventListener('click', function () {
             console.log(`CLICKED ON ${this.id}`);
             if (this.classList.length === 0) {
                 this.classList.add('selected');
-                this.style.fontSize = "200%";
+                this.style.height = "100px";
             } else {
                 this.classList.remove('selected');
-                this.style.fontSize = "100%";
+                this.style.height = "80px"
             }
         })
         document.getElementById(hand[i]).addEventListener('mouseover', function () {
             if (this.classList.length === 0) {
-                this.style.fontSize = "200%";
+                this.style.height = "100px";
             }
         })
         document.getElementById(hand[i]).addEventListener('mouseleave', function () {
             if (this.classList.length === 0) {
-                this.style.fontSize = "100%";
+                this.style.height = "80px";
             }
         })
     }
@@ -225,20 +225,7 @@ function form_enemy_hand(hand) {
     enemy_hand.innerHTML = '';
 
     for (let i = 0; i < hand.length; i++) {
-        enemy_hand.insertAdjacentHTML('beforeend', `<p id=${hand[i]}>${tile_data[hand[i]].tile}</p>`)
-        document.getElementById(hand[i]).addEventListener('click', function () {
-            console.log(`CLICKED ON ${this.id}`);
-        })
-        document.getElementById(hand[i]).addEventListener('mouseover', function () {
-            if (this.classList.length === 0) {
-                this.style.fontSize = "200%";
-            }
-        })
-        document.getElementById(hand[i]).addEventListener('mouseleave', function () {
-            if (this.classList.length === 0) {
-                this.style.fontSize = "100%";
-            }
-        })
+        enemy_hand.insertAdjacentHTML('beforeend', `<img src="tile_imgs/Back.png" id=${hand[i]} height="80px"></img>`)
     }
 }
 
@@ -382,27 +369,27 @@ function player_draw(hand) {
     sort(hand);
     //form_player_hand(player_tiles);
 
-    player_drawn_tile.insertAdjacentHTML('beforeend', `<p id=${drawn_tile}>${tile_data[drawn_tile].tile}</p>`)
+    player_drawn_tile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[drawn_tile].img_path}" id=${drawn_tile} height="80px" border="1px"></img>`)
     document.getElementById(drawn_tile).addEventListener('click', function () {
         console.log(`CLICKED ON ${this.id}`);
         if (this.classList.length === 0) {
             this.classList.add('selected');
-            this.style.fontSize = "200%";
+            this.style.height = "100px";
         } else {
             this.classList.remove('selected');
-            this.style.fontSize = "100%";
+            this.style.height = "80px"
         }
     })
     document.getElementById(drawn_tile).addEventListener('mouseover', function () {
         if (this.classList.length === 0) {
-            this.style.fontSize = "200%";
+                this.style.height = "100px";
         }
     })
     document.getElementById(drawn_tile).addEventListener('mouseleave', function () {
         if (this.classList.length === 0) {
-            this.style.fontSize = "100%";
+                this.style.height = "80px";
         }
-    })   
+    })
 }
 
 function enemy_draw(hand) {
@@ -427,7 +414,7 @@ function player_discard() {
         let discard_data = to_discard[0];
         player_recently_discarded = discard_data.id;
         document.getElementById(discard_data.id).remove();
-        player_discards.insertAdjacentHTML('beforeend', `<p id=${String(discard_data.id)}>${tile_data[discard_data.id].tile}</p>`);
+        player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${String(discard_data.id)} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
         enemy_check_ron();
         enemy_draw(enemy_tiles);
@@ -453,7 +440,7 @@ function enemy_discard() {
     console.log(discard_index);
     enemy_recently_discarded = to_discard;
     document.getElementById(to_discard).remove();
-    enemy_discards.insertAdjacentHTML('beforeend', `<p id=${to_discard}>${tile_data[to_discard].tile}</p>`)
+    enemy_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[to_discard].img_path}" id=${to_discard} height="80px" border="1px"></img>`)
     enemy_tiles.splice(discard_index, 1);
     console.log(enemy_tiles);
     return;
@@ -685,6 +672,6 @@ function end_game() {
 
 setup();
 
-player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
-wall.push(29);
-form_player_hand(player_tiles);
+// player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
+// wall.push(29);
+// form_player_hand(player_tiles);
