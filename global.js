@@ -462,9 +462,9 @@ function player_call_triplet() {
             console.log(player_called_tiles);
             player_tiles.splice(player_tiles.indexOf(Number(pair[0].id)), 1);
             player_tiles.splice(player_tiles.indexOf(Number(pair[1].id)), 1);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[enemy_discarded].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[pair[0].id].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[pair[1].id].tile}`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src=tile_imgs/${tile_data[enemy_discarded].img_path}" height="80px" border="1px"></img>`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[pair[0].id].img_path}" height="80px" border="1px"></img>`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[pair[1].id].img_path}" height="80px" border="1px"></img>`);
             document.getElementById(enemy_discarded).remove();
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
@@ -492,9 +492,9 @@ function player_call_sequence() {
             player_called_tiles = [...player_called_tiles, ...ids];
             player_tiles.splice(player_tiles.indexOf(Number(ids[0])), 1);
             player_tiles.splice(player_tiles.indexOf(Number(ids[1])), 1);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[0]].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[1]].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[2]].tile}`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[0]].img_path}" height="80px" border="1px"></img>`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[1]].img_path}" height="80px" border="1px"></img>`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[2]].img_path}" height="80px" border="1px"></img>`);
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
