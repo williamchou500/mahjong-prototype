@@ -20,7 +20,7 @@ let player_called_tiles_pile = document.getElementById('playerCalledTiles');
 let player_drawn_tile = document.getElementById('playerDrawnTile');
 let enemy_hand = document.getElementById('enemyHand');
 let enemy_discards = document.getElementById('enemyDiscards');
-let enemy_called_tiles_pile = document.getElementById('playerCalledTiles');
+let enemy_called_tiles_pile = document.getElementById('enemyCalledTiles');
 
 let player_tiles = [];
 let player_called_tiles = [];
@@ -29,6 +29,9 @@ let player_called_quads = 0;
 let enemy_tiles = [];
 let enemy_called_tiles = [];
 let enemy_called_quads = 0;
+let enemy_triplets = {};
+let enemy_pairs = {};
+let enemy_incomplete_sequences = {};
 
 let first_turn; 
 let curr_turn;
@@ -71,22 +74,22 @@ function sort(array) {
     array.sort(function(a, b){return a - b});
 }
 
-function check_triplets(hand) {
+function player_check_hand(hand) {
     let triplets = [];
+    let pairs = [];
+    let sequence_tiles = [];
+    let incomplete_sequences = [];
 
     for (let i = 2; i < hand.length; i++) {
         if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
-            triplets.push(hand[i-2])
-            triplets.push(hand[i-1])
-            triplets.push(hand[i])
+            triplets.push(hand[i-2]);
+            triplets.push(hand[i-1]);
+            triplets.push(hand[i]);
+        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+            pairs.push(hand[i-1]);
+            pairs.push(hand[i]);
         }
     }
-
-    return triplets.filter((value, index, self) => self.indexOf(value) === index);
-}
-
-function check_sequence(hand) {
-    let sequence_tiles = [];
 
     for (let i = 2; i < hand.length; i++) {
 
@@ -96,60 +99,86 @@ function check_sequence(hand) {
             sequence_tiles.push(hand[i-2]);
             sequence_tiles.push(hand[i-1]);
             sequence_tiles.push(hand[i]);
-        }
-    }
-
-    return sequence_tiles.filter((value, index, self) => self.indexOf(value) === index);
-}
-
-function check_pairs(hand) {
-    let pairs = [];
-
-    for (let i = 1; i < hand.length; i++) {
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
-            pairs.push(hand[i-1])
-            pairs.push(hand[i])
-        }
-    }
-
-    return pairs.filter((value, index, self) => self.indexOf(value) === index);
-}
-
-function check_incomplete_sequence(hand) {
-    let incomplete_sequences = [];
-    let needed_tile;
-
-    for (let i = 1; i < hand.length; i++) {
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            needed_tile = [tile_data[hand[i]].tile_id - 2, tile_data[hand[i]].tile_id + 1]
 
             // NEED TO SOMEHOW SAVE THE TILE THAT WOULD BE NEEDED TO COMPLETE THE SEQUENCE SO THE ENEMY CAN CALL ON SEQUENCES
 
         } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            needed_tile = [tile_data[hand[i]].tile_id - 1]
         }
     }
 
-    return incomplete_sequences.filter((value, index, self) => self.indexOf(value) === index);
+    triplets = triplets.filter((value, index, self) => self.indexOf(value) === index);
+    sequence_tiles = sequence_tiles.filter((value, index, self) => self.indexOf(value) === index);
+    pairs = pairs.filter((value, index, self) => self.indexOf(value) === index);
+    incomplete_sequences = incomplete_sequences.filter((value, index, self) => self.indexOf(value) === index);
+
+    return [triplets, sequence_tiles, pairs, incomplete_sequences];
 }
 
-function check_hand(hand) {
-    let triplets = check_triplets(hand);
-    let sequences = check_sequence(hand);
-    let pairs = check_pairs(hand).filter((value, index, self) => !triplets.includes(value));
-    pairs = pairs.filter((value, index, self) => !sequences.includes(value));
-    let incomplete_sequences = check_incomplete_sequence(hand).filter((value, index, self) => !sequences.includes(value));
-    incomplete_sequences = incomplete_sequences.filter((value, index, self) => !triplets.includes(value));
+function enemy_check_hand(hand) {
+    let triplets = [];
+    let pairs = [];
+    let sequence_tiles = [];
+    let incomplete_sequences = [];
 
-    return [triplets, sequences, pairs, incomplete_sequences];
+    for (let i = 1; i < hand.length; i++) {
+        if (i >= 2) {
+            if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+                triplets.push(hand[i-2]);
+                triplets.push(hand[i-1]);
+                triplets.push(hand[i]);
+                enemy_triplets[tile_data[hand[i]].tile_id] = [hand[i-2], hand[i-1], hand[i]];
+                continue;
+            } 
+        }
+        
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+            pairs.push(hand[i-1]);
+            pairs.push(hand[i]);
+            enemy_pairs[tile_data[hand[i]].tile_id] = [hand[i-1], hand[i]];
+        }
+    }
+
+    for (let i = 1; i < hand.length; i++) {
+
+        // THIS CURRENT PART OF THE CODE DOES NOT REGISTER [b1,b1,b2,b2,b3,b3] AS A COMPLETE SEQUENCE CURRENTLY
+
+        if (i >= 2) {
+            if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id - 1 && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-2]].category === tile_data[hand[i-1]].category && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]])) {
+                sequence_tiles.push(hand[i-2]);
+                sequence_tiles.push(hand[i-1]);
+                sequence_tiles.push(hand[i]);
+                continue;
+            }
+        }
+        
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+            incomplete_sequences.push(hand[i-1]);
+            incomplete_sequences.push(hand[i]);
+            enemy_incomplete_sequences[tile_data[hand[i]].tile_id - 2] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences[tile_data[hand[i]].tile_id + 1] = [hand[i-1], hand[i]];
+
+        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+            incomplete_sequences.push(hand[i-1]);
+            incomplete_sequences.push(hand[i]);
+            enemy_incomplete_sequences[tile_data[hand[i]].tile_id - 1] = [hand[i-1], hand[i]];
+        }
+    }
+
+    triplets = triplets.filter((value, index, self) => self.indexOf(value) === index);
+    sequence_tiles = sequence_tiles.filter((value, index, self) => self.indexOf(value) === index);
+    pairs = pairs.filter((value, index, self) => self.indexOf(value) === index);
+    incomplete_sequences = incomplete_sequences.filter((value, index, self) => self.indexOf(value) === index);
+
+    return [triplets, sequence_tiles, pairs, incomplete_sequences];
 }
 
 function pick_discard_tile(hand) {
-    categorized_useful = check_hand(hand);
+    categorized_useful = enemy_check_hand(hand);
     let triplets = categorized_useful[0];
     let sequences = categorized_useful[1];
     let pairs = categorized_useful[2];
@@ -556,7 +585,7 @@ function player_check_tsumo(hand=player_tiles) {
     // after drawing a tile, hand should have 14 tiles
     sort(hand);
 
-    let checked = check_hand(hand);
+    let checked = player_check_hand(hand);
 
     console.log(checked);
     
@@ -611,7 +640,7 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     // after drawing a tile, hand should have 14 tiles
     sort(hand);
 
-    let checked = check_hand(hand);
+    let checked = enemy_check_hand(hand);
 
     console.log('tsumo_hand', hand);
     console.log('cats', checked);
@@ -640,7 +669,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = check_hand(hand);
+    let checked = enemy_check_hand(hand);
 
     if (hand.length != 14) {
         hand.splice(tile_id, 1);
@@ -671,6 +700,15 @@ function end_game() {
 }
 
 setup();
+
+enemy_check_hand(enemy_tiles);
+console.log(enemy_triplets);
+console.log(enemy_pairs);
+console.log(enemy_incomplete_sequences);
+
+let dict = {'yo': ['1', '2']};
+dict['yoo'] = 21;
+console.log('dict', dict)
 
 // player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
 // wall.push(29);
