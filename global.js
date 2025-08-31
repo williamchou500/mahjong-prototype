@@ -29,9 +29,12 @@ let player_called_quads = 0;
 let enemy_tiles = [];
 let enemy_called_tiles = [];
 let enemy_called_quads = 0;
-let enemy_triplets = {};
-let enemy_pairs = {};
-let enemy_incomplete_sequences = {};
+let enemy_triplets_tiles = [];
+let enemy_triplets_dict = {};
+let enemy_pairs_tiles = [];
+let enemy_pairs_dict = {};
+let enemy_incomplete_sequences_tiles = [];
+let enemy_incomplete_sequences_dict = {};
 
 let first_turn; 
 let curr_turn;
@@ -131,7 +134,8 @@ function enemy_check_hand(hand) {
                 triplets.push(hand[i-2]);
                 triplets.push(hand[i-1]);
                 triplets.push(hand[i]);
-                enemy_triplets[tile_data[hand[i]].tile_id] = [hand[i-2], hand[i-1], hand[i]];
+                enemy_triplets_tiles.push(String(tile_data[hand[i]].tile_id));
+                enemy_triplets_dict[String(tile_data[hand[i]].tile_id)] = [hand[i-2], hand[i-1], hand[i]];
                 continue;
             } 
         }
@@ -139,7 +143,8 @@ function enemy_check_hand(hand) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
-            enemy_pairs[tile_data[hand[i]].tile_id] = [hand[i-1], hand[i]];
+            enemy_pairs_tiles.push(String(tile_data[hand[i]].tile_id));
+            enemy_pairs_dict[String(tile_data[hand[i]].tile_id)] = [hand[i-1], hand[i]];
         }
     }
 
@@ -159,13 +164,16 @@ function enemy_check_hand(hand) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            enemy_incomplete_sequences[tile_data[hand[i]].tile_id - 2] = [hand[i-1], hand[i]];
-            enemy_incomplete_sequences[tile_data[hand[i]].tile_id + 1] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id - 2));
+            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id + 1));
+            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id - 2)] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id + 1)] = [hand[i-1], hand[i]];
 
         } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            enemy_incomplete_sequences[tile_data[hand[i]].tile_id - 1] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id - 1));
+            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id - 1)] = [hand[i-1], hand[i]];
         }
     }
 
@@ -446,6 +454,9 @@ function player_discard() {
         player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${String(discard_data.id)} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
         enemy_check_ron();
+        enemy_call_quad();
+        enemy_call_triplet();
+        enemy_call_sequence();
         enemy_draw(enemy_tiles);
         enemy_check_tsumo();
         enemy_discard();
@@ -517,7 +528,7 @@ function player_call_sequence() {
         let ids = [incomplete_sequence[0].id, incomplete_sequence[1].id, String(enemy_discarded)];
         sort(ids);
 
-        if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id - 1 && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id - 1) {
+        if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id - 1 && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id - 1 && tile_data[ids[0]].category === tile_data[ids[1]].category && tile_data[ids[0]].category === tile_data[ids[2]].category) {
             player_called_tiles = [...player_called_tiles, ...ids];
             player_tiles.splice(player_tiles.indexOf(Number(ids[0])), 1);
             player_tiles.splice(player_tiles.indexOf(Number(ids[1])), 1);
@@ -568,14 +579,92 @@ function player_call_quad() {
 }
 
 function enemy_call_triplet() {
+    let player_discarded = player_recently_discarded;
+    console.log("tpd", player_discarded);
+
+    if (!enemy_pairs_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+        return;
+    }
+    
+    let pair = enemy_pairs_dict[String(player_discarded)];
+    console.log("pa", pair)
+    let ids = [pair[0].id, pair[1].id];
+
+    if (pair.length === 2) {
+        if (tile_data[enemy_discarded].tile_id === tile_data[pair[0].id].tile_id && tile_data[pair[0].id].tile_id === tile_data[pair[1].id].tile_id) {
+            enemy_called_tiles = [...enemy_called_tiles, ...ids, String(player_discarded)];
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(pair[0].id)), 1);
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(pair[1].id)), 1);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src=tile_imgs/${tile_data[enemy_discarded].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[pair[0].id].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[pair[1].id].img_path}" height="80px" border="1px"></img>`);
+            document.getElementById(enemy_discarded).remove();
+            document.getElementById(ids[0]).remove();
+            document.getElementById(ids[1]).remove();
+        }
+    }
     return;
 }
 
 function enemy_call_sequence() {
+    let player_discarded = player_recently_discarded;
+    console.log("ispd", player_discarded);
+
+    if (!enemy_incomplete_sequences_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+        return;
+    }
+
+    let incomplete_sequence = enemy_incomplete_sequences_dict[String(player_discarded)];
+    console.log("is", incomplete_sequence);
+
+    if (incomplete_sequence.length === 2) {
+        let ids = [incomplete_sequence[0].id, incomplete_sequence[1].id, String(player_discarded)];
+        sort(ids);
+
+        if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id - 1 && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id - 1 && tile_data[ids[0]].category === tile_data[ids[1]].category && tile_data[ids[0]].category === tile_data[ids[2]].category) {
+            enemy_called_tiles = [...enemy_called_tiles, ...ids];
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[0])), 1);
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[1])), 1);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[0]].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[1]].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[2]].img_path}" height="80px" border="1px"></img>`);
+            document.getElementById(ids[0]).remove();
+            document.getElementById(ids[1]).remove();
+            document.getElementById(ids[2]).remove();
+        }
+    }
     return;
 }
 
 function enemy_call_quad() {
+    let player_discarded = tile_data[player_recently_discarded].tile_id;
+    console.log("qpd", player_discarded);
+
+    if (!enemy_triplets_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+        return;
+    }
+
+    let triplet = enemy_triplets_dict[String(player_discarded)];
+    console.log('tri', triplet);
+
+    if (triplet.length === 3) {
+        let ids = [triplet[0].id, triplet[1].id, triplet[2].id, String(enemy_discarded)];
+        if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id && tile_data[ids[2]].tile_id === tile_data[ids[3]].tile_id) {
+            enemy_called_tiles = [...enemy_called_tiles, ...ids];
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[0])), 1);
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[1])), 1);
+            enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[2])), 1);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[0]].tile}`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[1]].tile}`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[2]].tile}`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[3]].tile}`);
+            document.getElementById(ids[0]).remove();
+            document.getElementById(ids[1]).remove();
+            document.getElementById(ids[2]).remove();
+            document.getElementById(ids[3]).remove();
+            enemy_called_quads++;
+        }
+    }
     return;
 }
 
@@ -702,9 +791,9 @@ function end_game() {
 setup();
 
 enemy_check_hand(enemy_tiles);
-console.log(enemy_triplets);
-console.log(enemy_pairs);
-console.log(enemy_incomplete_sequences);
+console.log(enemy_triplets_dict);
+console.log(enemy_pairs_dict);
+console.log(enemy_incomplete_sequences_dict);
 
 let dict = {'yo': ['1', '2']};
 dict['yoo'] = 21;
