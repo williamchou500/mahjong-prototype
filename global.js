@@ -128,14 +128,18 @@ function enemy_check_hand(hand) {
     let sequence_tiles = [];
     let incomplete_sequences = [];
 
+    enemy_pairs_dict = {};
+    enemy_incomplete_sequences_dict = {};
+    enemy_triplets_dict = {};
+
     for (let i = 1; i < hand.length; i++) {
         if (i >= 2) {
             if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
                 triplets.push(hand[i-2]);
                 triplets.push(hand[i-1]);
                 triplets.push(hand[i]);
-                enemy_triplets_tiles.push(String(tile_data[hand[i]].tile_id));
-                enemy_triplets_dict[String(tile_data[hand[i]].tile_id)] = [hand[i-2], hand[i-1], hand[i]];
+                enemy_triplets_tiles.push(tile_data[hand[i]].tile_id);
+                enemy_triplets_dict[tile_data[hand[i]].tile_id] = [hand[i-2], hand[i-1], hand[i]];
                 continue;
             } 
         }
@@ -143,8 +147,8 @@ function enemy_check_hand(hand) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
-            enemy_pairs_tiles.push(String(tile_data[hand[i]].tile_id));
-            enemy_pairs_dict[String(tile_data[hand[i]].tile_id)] = [hand[i-1], hand[i]];
+            enemy_pairs_tiles.push(tile_data[hand[i]].tile_id);
+            enemy_pairs_dict[tile_data[hand[i]].tile_id] = [hand[i-1], hand[i]];
         }
     }
 
@@ -164,16 +168,16 @@ function enemy_check_hand(hand) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id - 2));
-            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id + 1));
-            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id - 2)] = [hand[i-1], hand[i]];
-            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id + 1)] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_tiles.push(tile_data[hand[i]].tile_id - 2);
+            enemy_incomplete_sequences_tiles.push(tile_data[hand[i]].tile_id + 1);
+            enemy_incomplete_sequences_dict[tile_data[hand[i]].tile_id - 2] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_dict[tile_data[hand[i]].tile_id + 1] = [hand[i-1], hand[i]];
 
         } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
-            enemy_incomplete_sequences_tiles.push(String(tile_data[hand[i]].tile_id - 1));
-            enemy_incomplete_sequences_dict[String(tile_data[hand[i]].tile_id - 1)] = [hand[i-1], hand[i]];
+            enemy_incomplete_sequences_tiles.push(tile_data[hand[i]].tile_id - 1);
+            enemy_incomplete_sequences_dict[tile_data[hand[i]].tile_id - 1] = [hand[i-1], hand[i]];
         }
     }
 
@@ -449,9 +453,9 @@ function player_discard() {
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
-        player_recently_discarded = discard_data.id;
+        player_recently_discarded = Number(discard_data.id);
         document.getElementById(discard_data.id).remove();
-        player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${String(discard_data.id)} height="80px" border="1px"></img>`);
+        player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${discard_data.id} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
         enemy_check_ron();
         enemy_call_quad();
@@ -478,7 +482,7 @@ function enemy_discard() {
     console.log(document.getElementById('enemyHand'));
     let discard_index = enemy_tiles.indexOf(to_discard);
     console.log(discard_index);
-    enemy_recently_discarded = to_discard;
+    enemy_recently_discarded = Number(to_discard);
     document.getElementById(to_discard).remove();
     enemy_discards.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[to_discard].img_path}" id=${to_discard} height="80px" border="1px"></img>`)
     enemy_tiles.splice(discard_index, 1);
@@ -561,10 +565,10 @@ function player_call_quad() {
             player_tiles.splice(player_tiles.indexOf(Number(ids[0])), 1);
             player_tiles.splice(player_tiles.indexOf(Number(ids[1])), 1);
             player_tiles.splice(player_tiles.indexOf(Number(ids[2])), 1);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[0]].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[1]].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[2]].tile}`);
-            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<p>${tile_data[ids[3]].tile}`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[0]].img_path}" height="80px" border="1px"`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[1]].img_path}" height="80px" border="1px"`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[2]].img_path}" height="80px" border="1px"`);
+            player_called_tiles_pile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[ids[3]].img_path}" height="80px" border="1px"`);
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
@@ -582,16 +586,19 @@ function enemy_call_triplet() {
     let player_discarded = player_recently_discarded;
     console.log("tpd", player_discarded);
 
-    if (!enemy_pairs_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+    console.log(enemy_pairs_dict[player_discarded]);
+    console.log(enemy_pairs_dict);
+
+    if (!enemy_pairs_tiles.includes(tile_data[player_discarded].tile_id)) {
         return;
     }
     
-    let pair = enemy_pairs_dict[String(player_discarded)];
+    let pair = enemy_pairs_dict[tile_data[player_discarded].tile_id];
     console.log("pa", pair)
     let ids = [pair[0].id, pair[1].id];
 
     if (pair.length === 2) {
-        if (tile_data[enemy_discarded].tile_id === tile_data[pair[0].id].tile_id && tile_data[pair[0].id].tile_id === tile_data[pair[1].id].tile_id) {
+        if (tile_data[player_discarded].tile_id === tile_data[ids[0]].tile_id && tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id) {
             enemy_called_tiles = [...enemy_called_tiles, ...ids, String(player_discarded)];
             enemy_tiles.splice(enemy_tiles.indexOf(Number(pair[0].id)), 1);
             enemy_tiles.splice(enemy_tiles.indexOf(Number(pair[1].id)), 1);
@@ -610,15 +617,15 @@ function enemy_call_sequence() {
     let player_discarded = player_recently_discarded;
     console.log("ispd", player_discarded);
 
-    if (!enemy_incomplete_sequences_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+    if (!enemy_incomplete_sequences_tiles.includes(tile_data[player_discarded].tile_id)) {
         return;
     }
 
-    let incomplete_sequence = enemy_incomplete_sequences_dict[String(player_discarded)];
+    let incomplete_sequence = enemy_incomplete_sequences_dict[tile_data[player_discarded].tile_id];
     console.log("is", incomplete_sequence);
 
     if (incomplete_sequence.length === 2) {
-        let ids = [incomplete_sequence[0].id, incomplete_sequence[1].id, String(player_discarded)];
+        let ids = [incomplete_sequence[0].id, incomplete_sequence[1].id, player_discarded];
         sort(ids);
 
         if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id - 1 && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id - 1 && tile_data[ids[0]].category === tile_data[ids[1]].category && tile_data[ids[0]].category === tile_data[ids[2]].category) {
@@ -637,27 +644,28 @@ function enemy_call_sequence() {
 }
 
 function enemy_call_quad() {
-    let player_discarded = tile_data[player_recently_discarded].tile_id;
+    let player_discarded = player_recently_discarded;
     console.log("qpd", player_discarded);
+    console.log(enemy_triplets_dict[0]);
 
-    if (!enemy_triplets_tiles.includes(String(tile_data[player_discarded].tile_id))) {
+    if (!enemy_triplets_tiles.includes(tile_data[player_discarded].tile_id)) {
         return;
     }
 
-    let triplet = enemy_triplets_dict[String(player_discarded)];
+    let triplet = enemy_triplets_dict[tile_data[player_discarded].tile_id];
     console.log('tri', triplet);
 
     if (triplet.length === 3) {
-        let ids = [triplet[0].id, triplet[1].id, triplet[2].id, String(enemy_discarded)];
+        let ids = [triplet[0], triplet[1], triplet[2], player_discarded];
         if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id && tile_data[ids[2]].tile_id === tile_data[ids[3]].tile_id) {
             enemy_called_tiles = [...enemy_called_tiles, ...ids];
             enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[0])), 1);
             enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[1])), 1);
             enemy_tiles.splice(enemy_tiles.indexOf(Number(ids[2])), 1);
-            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[0]].tile}`);
-            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[1]].tile}`);
-            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[2]].tile}`);
-            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<p>${tile_data[ids[3]].tile}`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[0]].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[1]].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[2]].img_path}" height="80px" border="1px"></img>`);
+            enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[ids[3]].img_path}" height="80px" border="1px"></img>`);
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
@@ -790,6 +798,10 @@ function end_game() {
 
 setup();
 
+enemy_tiles = [0,1,4,9,13,26,30,33,50,52,68,100,101];
+form_enemy_hand(enemy_tiles);
+player_tiles = [3,14,15,16,17,18,19,20,21,22,23,24,102];
+form_player_hand(player_tiles);
 enemy_check_hand(enemy_tiles);
 console.log(enemy_triplets_dict);
 console.log(enemy_pairs_dict);
