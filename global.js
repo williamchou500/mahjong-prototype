@@ -52,7 +52,9 @@ const tile_data = await d3.csv('tiles.csv', (row) => ({
       desc: String(row.desc),
       img_path: String(row.img_path),
       tile_id: Number(row.tile_id),
-      category: String(row.category)
+      category: String(row.category),
+      enemy_unknown: Number(row.enemy_unknown),
+      player_unknown: Number(row.player_unknown)
 }));
 
 console.log('Tile Data: ', tile_data);
