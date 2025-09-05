@@ -816,13 +816,13 @@ setup();
 // form_enemy_hand(enemy_tiles);
 // player_tiles = [2,8,61,62,63,64,65,66,67,68,69,70,71];
 // form_player_hand(player_tiles);
-// enemy_check_hand(enemy_tiles);
-// console.log(1,enemy_triplets_dict);
-// console.log(11,enemy_triplets_tiles)
-// console.log(2,enemy_pairs_dict);
-// console.log(22, enemy_pairs_tiles)
-// console.log(3,enemy_incomplete_sequences_dict);
-// console.log(33,enemy_incomplete_sequences_tiles)
+enemy_check_hand(enemy_tiles);
+console.log(1,enemy_triplets_dict);
+console.log(11,enemy_triplets_tiles)
+console.log(2,enemy_pairs_dict);
+console.log(22, enemy_pairs_tiles)
+console.log(3,enemy_incomplete_sequences_dict);
+console.log(33,enemy_incomplete_sequences_tiles)
 
 // let dict = {'yo': ['1', '2']};
 // dict['yoo'] = 21;
