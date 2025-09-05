@@ -159,6 +159,8 @@ function enemy_check_hand(hand) {
 
         // THIS CURRENT PART OF THE CODE DOES NOT REGISTER [b1,b1,b2,b2,b3,b3] AS A COMPLETE SEQUENCE CURRENTLY
 
+        // GET UNIQUE TILES ONLY TO FIX THIS !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         if (i >= 2) {
             if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id - 1 && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-2]].category === tile_data[hand[i-1]].category && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]])) {
                 sequence_tiles.push(hand[i-2]);
@@ -188,6 +190,13 @@ function enemy_check_hand(hand) {
     sequence_tiles = sequence_tiles.filter((value, index, self) => self.indexOf(value) === index);
     pairs = pairs.filter((value, index, self) => self.indexOf(value) === index);
     incomplete_sequences = incomplete_sequences.filter((value, index, self) => self.indexOf(value) === index);
+
+    console.log(1,enemy_triplets_dict);
+    console.log(11,enemy_triplets_tiles);
+    console.log(2,enemy_pairs_dict);
+    console.log(22, enemy_pairs_tiles);
+    console.log(3,enemy_incomplete_sequences_dict);
+    console.log(33,enemy_incomplete_sequences_tiles);
 
     return [triplets, sequence_tiles, pairs, incomplete_sequences];
 }
@@ -458,8 +467,10 @@ function player_discard() {
         document.getElementById(discard_data.id).remove();
         player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${discard_data.id} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
-        enemy_check_hand(enemy_hand);
         enemy_check_ron();
+        console.log('post ron');
+        enemy_check_hand(enemy_tiles);
+        console.log(enemy_tiles);
         enemy_call_quad();
         enemy_call_triplet();
         enemy_call_sequence();
@@ -591,7 +602,7 @@ function enemy_call_triplet() {
     console.log(enemy_pairs_dict[player_discarded]);
     console.log(enemy_pairs_dict);
 
-    if (!enemy_pairs_tiles.includes(tile_data[player_discarded].tile_id)) {
+    if (!enemy_pairs_tiles.includes(tile_data[player_discarded].tile_id) || enemy_triplets_tiles.includes(tile_data[player_discarded].tile_id)) {
         console.log('no pair');
         return;
     }
@@ -672,7 +683,7 @@ function enemy_call_quad() {
             document.getElementById(triplet[0]).remove();
             document.getElementById(triplet[1]).remove();
             document.getElementById(triplet[2]).remove();
-            document.getElementById(triplet[3]).remove();
+            document.getElementById(player_discarded).remove();
             enemy_called_quads++;
         }
     }
@@ -769,7 +780,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = enemy_check_hand(hand);
+    let checked = player_check_hand(hand);
 
     if (hand.length != 14) {
         hand.splice(tile_id, 1);
@@ -801,18 +812,21 @@ function end_game() {
 
 setup();
 
-enemy_tiles = [0,5,18,22,26,31,36,44,50,60,80,100];
-form_enemy_hand(enemy_tiles);
-player_tiles = [8,61,62,63,64,65,66,67,68,69,70,71,72];
-form_player_hand(player_tiles);
-enemy_check_hand(enemy_tiles);
-console.log(1,enemy_triplets_dict);
-console.log(2,enemy_pairs_dict);
-console.log(3,enemy_incomplete_sequences_dict);
+// enemy_tiles = [0,1,3,7,17,18,22,26,31,36,44,50,80];
+// form_enemy_hand(enemy_tiles);
+// player_tiles = [2,8,61,62,63,64,65,66,67,68,69,70,71];
+// form_player_hand(player_tiles);
+// enemy_check_hand(enemy_tiles);
+// console.log(1,enemy_triplets_dict);
+// console.log(11,enemy_triplets_tiles)
+// console.log(2,enemy_pairs_dict);
+// console.log(22, enemy_pairs_tiles)
+// console.log(3,enemy_incomplete_sequences_dict);
+// console.log(33,enemy_incomplete_sequences_tiles)
 
-let dict = {'yo': ['1', '2']};
-dict['yoo'] = 21;
-console.log('dict', dict)
+// let dict = {'yo': ['1', '2']};
+// dict['yoo'] = 21;
+// console.log('dict', dict)
 
 // player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
 // wall.push(29);
