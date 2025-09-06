@@ -53,9 +53,12 @@ const tile_data = await d3.csv('tiles.csv', (row) => ({
       img_path: String(row.img_path),
       tile_id: Number(row.tile_id),
       category: String(row.category),
-      enemy_unknown: Number(row.enemy_unknown),
-      player_unknown: Number(row.player_unknown)
 }));
+
+let tile_counts = await d3.csv('tiles_count.csv', (row) => ({
+    player_unknown: Number(row.player_unknown),
+    enemy_unknown: Number(row.enemy_unknown)
+})) 
 
 console.log('Tile Data: ', tile_data);
 
@@ -77,6 +80,10 @@ function shuffle(array) {
 
 function sort(array) {
     array.sort(function(a, b){return a - b});
+}
+
+function sort_by_unknown(array) {
+    array.sort(function(a, b){return tile_counts[tile_data[a].tile_id].enemy_unknown -  tile_counts[tile_data[b].tile_id].enemy_unknown})
 }
 
 function player_check_hand(hand) {
@@ -228,16 +235,16 @@ function pick_discard_tile(hand) {
     if (not_useful.length === 1) {
         return not_useful[0]
     } else if (not_useful.length > 1) {
-        shuffle(not_useful)
+        sort_by_unknown(not_useful)
         return not_useful[0]
         // eventually, should discard the one that has been played the most already ie the least risky tile but idk maybe some 
         // if not_useful is empty, should discard from sequence that is a single possibility (1, 3) 
         // PRIORITIZE GETTING RID OF 1 OR 9 FOR THESE CASES otherwise, check for least risky/least likely tile
     } else if (not_useful.length === 0) {
-        shuffle(categorized_useful[0]);
-        shuffle(categorized_useful[1]);
-        shuffle(categorized_useful[2]);
-        shuffle(categorized_useful[3]);
+        sort_by_unknown(categorized_useful[0]);
+        sort_by_unknown(categorized_useful[1]);
+        sort_by_unknown(categorized_useful[2]);
+        sort_by_unknown(categorized_useful[3]);
 
         for (let i = 3; i > -1; i--) {
             if (categorized_useful[i].length != 0) {
@@ -350,6 +357,7 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             player_tiles.push(to_insert);
             tile_data[to_insert].count--;
+            tile_counts[tile_data[to_insert].tile_id].player_unknown--;
         }
 
         sort(player_tiles);
@@ -359,6 +367,7 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             enemy_tiles.push(to_insert);
             tile_data[to_insert].count--;
+            tile_counts[tile_data[to_insert].tile_id].enemy_unknown--;
         }
 
         sort(enemy_tiles);
@@ -370,6 +379,7 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             enemy_tiles.push(to_insert);
             tile_data[to_insert].count--;
+            tile_counts[tile_data[to_insert].tile_id].enemy_unknown--;
         }
 
         sort(enemy_tiles);
@@ -379,6 +389,7 @@ function setup() {
             to_insert = wall[tiles_remaining-i];
             player_tiles.push(to_insert);
             tile_data[to_insert].count--;
+            tile_counts[tile_data[to_insert].tile_id].player_unknown--;
         }
 
         sort(player_tiles);
@@ -418,9 +429,9 @@ function player_draw(hand) {
 
     let drawn_tile = wall.pop()
     tiles_remaining--;
+    tile_counts[tile_data[drawn_tile].tile_id].player_unknown--;
     hand.push(drawn_tile);
     sort(hand);
-    //form_player_hand(player_tiles);
 
     player_drawn_tile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[drawn_tile].img_path}" id=${drawn_tile} height="80px" border="1px"></img>`)
     document.getElementById(drawn_tile).addEventListener('click', function () {
@@ -453,6 +464,7 @@ function enemy_draw(hand) {
 
     let drawn_tile = wall.pop();
     tiles_remaining--;
+    tile_counts[tile_data[drawn_tile].tile_id].enemy_unknown--;
     hand.push(drawn_tile);
     sort(hand);
     form_enemy_hand(enemy_tiles);
@@ -466,19 +478,23 @@ function player_discard() {
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
         player_recently_discarded = Number(discard_data.id);
+        tile_counts[tile_data[player_recently_discarded].tile_id].enemy_unknown--;
         document.getElementById(discard_data.id).remove();
         player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${discard_data.id} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
-        enemy_check_ron();
-        console.log('post ron');
-        enemy_check_hand(enemy_tiles);
-        console.log(enemy_tiles);
-        enemy_call_quad();
-        enemy_call_triplet();
-        enemy_call_sequence();
-        enemy_draw(enemy_tiles);
-        enemy_check_tsumo();
-        enemy_discard();
+        if (enemy_check_ron()) {
+            return;
+        } else if (enemy_call_quad()) {
+            return;
+        } else if (enemy_call_triplet()) {
+            return;
+        } else if (enemy_call_sequence()) {
+            return;
+        } else {
+            enemy_draw(enemy_tiles);
+            enemy_check_tsumo();
+            enemy_discard();
+        };
     } else {
         alert('INVALID AMOUNT OF TILES SELECTED');
     }
@@ -492,6 +508,7 @@ function player_discard() {
 
 function enemy_discard() {
     let to_discard = pick_discard_tile(enemy_tiles);
+    tile_counts[tile_data[to_discard].tile_id].player_unknown--;
     console.log('enemy discarded: ', to_discard);
     console.log(document.getElementById(to_discard));
     console.log(document.getElementById('enemyHand'));
@@ -606,7 +623,7 @@ function enemy_call_triplet() {
 
     if (!enemy_pairs_tiles.includes(tile_data[player_discarded].tile_id) || enemy_triplets_tiles.includes(tile_data[player_discarded].tile_id)) {
         console.log('no pair');
-        return;
+        return false;
     }
     
     let pair = enemy_pairs_dict[tile_data[player_discarded].tile_id];
@@ -623,9 +640,11 @@ function enemy_call_triplet() {
             document.getElementById(player_discarded).remove();
             document.getElementById(pair[0]).remove();
             document.getElementById(pair[1]).remove();
+            enemy_discard();
+            return true;
         }
     }
-    return;
+    return false;
 }
 
 function enemy_call_sequence() {
@@ -634,7 +653,7 @@ function enemy_call_sequence() {
 
     if (!enemy_incomplete_sequences_tiles.includes(tile_data[player_discarded].tile_id)) {
         console.log('no seq');
-        return;
+        return false;
     }
 
     let incomplete_sequence = enemy_incomplete_sequences_dict[tile_data[player_discarded].tile_id];
@@ -654,6 +673,8 @@ function enemy_call_sequence() {
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
+            enemy_discard();
+            return true;
         }
     }
     return;
@@ -666,7 +687,7 @@ function enemy_call_quad() {
 
     if (!enemy_triplets_tiles.includes(tile_data[player_discarded].tile_id)) {
         console.log('no trip')
-        return;
+        return false;
     }
 
     let triplet = enemy_triplets_dict[tile_data[player_discarded].tile_id];
@@ -687,9 +708,13 @@ function enemy_call_quad() {
             document.getElementById(triplet[2]).remove();
             document.getElementById(player_discarded).remove();
             enemy_called_quads++;
+            enemy_draw();
+            enemy_check_tsumo(enemy_tiles);
+            enemy_discard();
+            return true;
         }
     }
-    return;
+    return false;
 }
 
 // NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
@@ -813,11 +838,15 @@ function end_game() {
 }
 
 setup();
+console.log('counts', tile_counts);
+sort_by_unknown(enemy_tiles);
+console.log('unknown', enemy_tiles);
 
 // enemy_tiles = [0,1,3,7,17,18,22,26,31,36,44,50,80];
 // form_enemy_hand(enemy_tiles);
 // player_tiles = [2,8,61,62,63,64,65,66,67,68,69,70,71];
 // form_player_hand(player_tiles);
+
 enemy_check_hand(enemy_tiles);
 console.log(1,enemy_triplets_dict);
 console.log(11,enemy_triplets_tiles)

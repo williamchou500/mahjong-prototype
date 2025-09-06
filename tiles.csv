@@ -1,137 +1,137 @@
-,tile,desc,img_path,tile_id,category,enemy_unknown,player_unknown
-0,1m,1 of Characters,1m.png,0,characters,4,4
-1,1m,1 of Characters,1m.png,0,characters,4,4
-2,1m,1 of Characters,1m.png,0,characters,4,4
-3,1m,1 of Characters,1m.png,0,characters,4,4
-4,2m,2 of Characters,2m.png,1,characters,4,4
-5,2m,2 of Characters,2m.png,1,characters,4,4
-6,2m,2 of Characters,2m.png,1,characters,4,4
-7,2m,2 of Characters,2m.png,1,characters,4,4
-8,3m,3 of Characters,3m.png,2,characters,4,4
-9,3m,3 of Characters,3m.png,2,characters,4,4
-10,3m,3 of Characters,3m.png,2,characters,4,4
-11,3m,3 of Characters,3m.png,2,characters,4,4
-12,4m,4 of Characters,4m.png,3,characters,4,4
-13,4m,4 of Characters,4m.png,3,characters,4,4
-14,4m,4 of Characters,4m.png,3,characters,4,4
-15,4m,4 of Characters,4m.png,3,characters,4,4
-16,5m,5 of Characters,5m.png,4,characters,4,4
-17,5m,5 of Characters,5m.png,4,characters,4,4
-18,5m,5 of Characters,5m.png,4,characters,4,4
-19,5m,5 of Characters,5m.png,4,characters,4,4
-20,6m,6 of Characters,6m.png,5,characters,4,4
-21,6m,6 of Characters,6m.png,5,characters,4,4
-22,6m,6 of Characters,6m.png,5,characters,4,4
-23,6m,6 of Characters,6m.png,5,characters,4,4
-24,7m,7 of Characters,7m.png,6,characters,4,4
-25,7m,7 of Characters,7m.png,6,characters,4,4
-26,7m,7 of Characters,7m.png,6,characters,4,4
-27,7m,7 of Characters,7m.png,6,characters,4,4
-28,8m,8 of Characters,8m.png,7,characters,4,4
-29,8m,8 of Characters,8m.png,7,characters,4,4
-30,8m,8 of Characters,8m.png,7,characters,4,4
-31,8m,8 of Characters,8m.png,7,characters,4,4
-32,9m,9 of Characters,9m.png,8,characters,4,4
-33,9m,9 of Characters,9m.png,8,characters,4,4
-34,9m,9 of Characters,9m.png,8,characters,4,4
-35,9m,9 of Characters,9m.png,8,characters,4,4
-36,1c,1 of Circles,1c.png,9,circles,4,4
-37,1c,1 of Circles,1c.png,9,circles,4,4
-38,1c,1 of Circles,1c.png,9,circles,4,4
-39,1c,1 of Circles,1c.png,9,circles,4,4
-40,2c,2 of Circles,2c.png,10,circles,4,4
-41,2c,2 of Circles,2c.png,10,circles,4,4
-42,2c,2 of Circles,2c.png,10,circles,4,4
-43,2c,2 of Circles,2c.png,10,circles,4,4
-44,3c,3 of Circles,3c.png,11,circles,4,4
-45,3c,3 of Circles,3c.png,11,circles,4,4
-46,3c,3 of Circles,3c.png,11,circles,4,4
-47,3c,3 of Circles,3c.png,11,circles,4,4
-48,4c,4 of Circles,4c.png,12,circles,4,4
-49,4c,4 of Circles,4c.png,12,circles,4,4
-50,4c,4 of Circles,4c.png,12,circles,4,4
-51,4c,4 of Circles,4c.png,12,circles,4,4
-52,5c,5 of Circles,5c.png,13,circles,4,4
-53,5c,5 of Circles,5c.png,13,circles,4,4
-54,5c,5 of Circles,5c.png,13,circles,4,4
-55,5c,5 of Circles,5c.png,13,circles,4,4
-56,6c,6 of Circles,6c.png,14,circles,4,4
-57,6c,6 of Circles,6c.png,14,circles,4,4
-58,6c,6 of Circles,6c.png,14,circles,4,4
-59,6c,6 of Circles,6c.png,14,circles,4,4
-60,7c,7 of Circles,7c.png,15,circles,4,4
-61,7c,7 of Circles,7c.png,15,circles,4,4
-62,7c,7 of Circles,7c.png,15,circles,4,4
-63,7c,7 of Circles,7c.png,15,circles,4,4
-64,8c,8 of Circles,8c.png,16,circles,4,4
-65,8c,8 of Circles,8c.png,16,circles,4,4
-66,8c,8 of Circles,8c.png,16,circles,4,4
-67,8c,8 of Circles,8c.png,16,circles,4,4
-68,9c,9 of Circles,9c.png,17,circles,4,4
-69,9c,9 of Circles,9c.png,17,circles,4,4
-70,9c,9 of Circles,9c.png,17,circles,4,4
-71,9c,9 of Circles,9c.png,17,circles,4,4
-72,1b,1 of Bamboo,1b.png,18,bamboo,4,4
-73,1b,1 of Bamboo,1b.png,18,bamboo,4,4
-74,1b,1 of Bamboo,1b.png,18,bamboo,4,4
-75,1b,1 of Bamboo,1b.png,18,bamboo,4,4
-76,2b,2 of Bamboo,2b.png,19,bamboo,4,4
-77,2b,2 of Bamboo,2b.png,19,bamboo,4,4
-78,2b,2 of Bamboo,2b.png,19,bamboo,4,4
-79,2b,2 of Bamboo,2b.png,19,bamboo,4,4
-80,3b,3 of Bamboo,3b.png,20,bamboo,4,4
-81,3b,3 of Bamboo,3b.png,20,bamboo,4,4
-82,3b,3 of Bamboo,3b.png,20,bamboo,4,4
-83,3b,3 of Bamboo,3b.png,20,bamboo,4,4
-84,4b,4 of Bamboo,4b.png,21,bamboo,4,4
-85,4b,4 of Bamboo,4b.png,21,bamboo,4,4
-86,4b,4 of Bamboo,4b.png,21,bamboo,4,4
-87,4b,4 of Bamboo,4b.png,21,bamboo,4,4
-88,5b,5 of Bamboo,5b.png,22,bamboo,4,4
-89,5b,5 of Bamboo,5b.png,22,bamboo,4,4
-90,5b,5 of Bamboo,5b.png,22,bamboo,4,4
-91,5b,5 of Bamboo,5b.png,22,bamboo,4,4
-92,6b,6 of Bamboo,6b.png,23,bamboo,4,4
-93,6b,6 of Bamboo,6b.png,23,bamboo,4,4
-94,6b,6 of Bamboo,6b.png,23,bamboo,4,4
-95,6b,6 of Bamboo,6b.png,23,bamboo,4,4
-96,7b,7 of Bamboo,7b.png,24,bamboo,4,4
-97,7b,7 of Bamboo,7b.png,24,bamboo,4,4
-98,7b,7 of Bamboo,7b.png,24,bamboo,4,4
-99,7b,7 of Bamboo,7b.png,24,bamboo,4,4
-100,8b,8 of Bamboo,8b.png,25,bamboo,4,4
-101,8b,8 of Bamboo,8b.png,25,bamboo,4,4
-102,8b,8 of Bamboo,8b.png,25,bamboo,4,4
-103,8b,8 of Bamboo,8b.png,25,bamboo,4,4
-104,9b,9 of Bamboo,9b.png,26,bamboo,4,4
-105,9b,9 of Bamboo,9b.png,26,bamboo,4,4
-106,9b,9 of Bamboo,9b.png,26,bamboo,4,4
-107,9b,9 of Bamboo,9b.png,26,bamboo,4,4
-108,rd,Red Dragon,rd.png,27,dragon,4,4
-109,rd,Red Dragon,rd.png,27,dragon,4,4
-110,rd,Red Dragon,rd.png,27,dragon,4,4
-111,rd,Red Dragon,rd.png,27,dragon,4,4
-112,gd,Green Dragon,gd.png,28,dragon,4,4
-113,gd,Green Dragon,gd.png,28,dragon,4,4
-114,gd,Green Dragon,gd.png,28,dragon,4,4
-115,gd,Green Dragon,gd.png,28,dragon,4,4
-116,wd,White Dragon,wd.png,29,dragon,4,4
-117,wd,White Dragon,wd.png,29,dragon,4,4
-118,wd,White Dragon,wd.png,29,dragon,4,4
-119,wd,White Dragon,wd.png,29,dragon,4,4
-120,e,East Wind,e.png,30,wind,4,4
-121,e,East Wind,e.png,30,wind,4,4
-122,e,East Wind,e.png,30,wind,4,4
-123,e,East Wind,e.png,30,wind,4,4
-124,s,South Wind,s.png,31,wind,4,4
-125,s,South Wind,s.png,31,wind,4,4
-126,s,South Wind,s.png,31,wind,4,4
-127,s,South Wind,s.png,31,wind,4,4
-128,w,West Wind,w.png,32,wind,4,4
-129,w,West Wind,w.png,32,wind,4,4
-130,w,West Wind,w.png,32,wind,4,4
-131,w,West Wind,w.png,32,wind,4,4
-132,n,North Wind,n.png,33,wind,4,4
-133,n,North Wind,n.png,33,wind,4,4
-134,n,North Wind,n.png,33,wind,4,4
-135,n,North Wind,n.png,33,wind,4,4
+,tile,desc,img_path,tile_id,category
+0,1m,1 of Characters,1m.png,0,characters
+1,1m,1 of Characters,1m.png,0,characters
+2,1m,1 of Characters,1m.png,0,characters
+3,1m,1 of Characters,1m.png,0,characters
+4,2m,2 of Characters,2m.png,1,characters
+5,2m,2 of Characters,2m.png,1,characters
+6,2m,2 of Characters,2m.png,1,characters
+7,2m,2 of Characters,2m.png,1,characters
+8,3m,3 of Characters,3m.png,2,characters
+9,3m,3 of Characters,3m.png,2,characters
+10,3m,3 of Characters,3m.png,2,characters
+11,3m,3 of Characters,3m.png,2,characters
+12,4m,4 of Characters,4m.png,3,characters
+13,4m,4 of Characters,4m.png,3,characters
+14,4m,4 of Characters,4m.png,3,characters
+15,4m,4 of Characters,4m.png,3,characters
+16,5m,5 of Characters,5m.png,4,characters
+17,5m,5 of Characters,5m.png,4,characters
+18,5m,5 of Characters,5m.png,4,characters
+19,5m,5 of Characters,5m.png,4,characters
+20,6m,6 of Characters,6m.png,5,characters
+21,6m,6 of Characters,6m.png,5,characters
+22,6m,6 of Characters,6m.png,5,characters
+23,6m,6 of Characters,6m.png,5,characters
+24,7m,7 of Characters,7m.png,6,characters
+25,7m,7 of Characters,7m.png,6,characters
+26,7m,7 of Characters,7m.png,6,characters
+27,7m,7 of Characters,7m.png,6,characters
+28,8m,8 of Characters,8m.png,7,characters
+29,8m,8 of Characters,8m.png,7,characters
+30,8m,8 of Characters,8m.png,7,characters
+31,8m,8 of Characters,8m.png,7,characters
+32,9m,9 of Characters,9m.png,8,characters
+33,9m,9 of Characters,9m.png,8,characters
+34,9m,9 of Characters,9m.png,8,characters
+35,9m,9 of Characters,9m.png,8,characters
+36,1c,1 of Circles,1c.png,9,circles
+37,1c,1 of Circles,1c.png,9,circles
+38,1c,1 of Circles,1c.png,9,circles
+39,1c,1 of Circles,1c.png,9,circles
+40,2c,2 of Circles,2c.png,10,circles
+41,2c,2 of Circles,2c.png,10,circles
+42,2c,2 of Circles,2c.png,10,circles
+43,2c,2 of Circles,2c.png,10,circles
+44,3c,3 of Circles,3c.png,11,circles
+45,3c,3 of Circles,3c.png,11,circles
+46,3c,3 of Circles,3c.png,11,circles
+47,3c,3 of Circles,3c.png,11,circles
+48,4c,4 of Circles,4c.png,12,circles
+49,4c,4 of Circles,4c.png,12,circles
+50,4c,4 of Circles,4c.png,12,circles
+51,4c,4 of Circles,4c.png,12,circles
+52,5c,5 of Circles,5c.png,13,circles
+53,5c,5 of Circles,5c.png,13,circles
+54,5c,5 of Circles,5c.png,13,circles
+55,5c,5 of Circles,5c.png,13,circles
+56,6c,6 of Circles,6c.png,14,circles
+57,6c,6 of Circles,6c.png,14,circles
+58,6c,6 of Circles,6c.png,14,circles
+59,6c,6 of Circles,6c.png,14,circles
+60,7c,7 of Circles,7c.png,15,circles
+61,7c,7 of Circles,7c.png,15,circles
+62,7c,7 of Circles,7c.png,15,circles
+63,7c,7 of Circles,7c.png,15,circles
+64,8c,8 of Circles,8c.png,16,circles
+65,8c,8 of Circles,8c.png,16,circles
+66,8c,8 of Circles,8c.png,16,circles
+67,8c,8 of Circles,8c.png,16,circles
+68,9c,9 of Circles,9c.png,17,circles
+69,9c,9 of Circles,9c.png,17,circles
+70,9c,9 of Circles,9c.png,17,circles
+71,9c,9 of Circles,9c.png,17,circles
+72,1b,1 of Bamboo,1b.png,18,bamboo
+73,1b,1 of Bamboo,1b.png,18,bamboo
+74,1b,1 of Bamboo,1b.png,18,bamboo
+75,1b,1 of Bamboo,1b.png,18,bamboo
+76,2b,2 of Bamboo,2b.png,19,bamboo
+77,2b,2 of Bamboo,2b.png,19,bamboo
+78,2b,2 of Bamboo,2b.png,19,bamboo
+79,2b,2 of Bamboo,2b.png,19,bamboo
+80,3b,3 of Bamboo,3b.png,20,bamboo
+81,3b,3 of Bamboo,3b.png,20,bamboo
+82,3b,3 of Bamboo,3b.png,20,bamboo
+83,3b,3 of Bamboo,3b.png,20,bamboo
+84,4b,4 of Bamboo,4b.png,21,bamboo
+85,4b,4 of Bamboo,4b.png,21,bamboo
+86,4b,4 of Bamboo,4b.png,21,bamboo
+87,4b,4 of Bamboo,4b.png,21,bamboo
+88,5b,5 of Bamboo,5b.png,22,bamboo
+89,5b,5 of Bamboo,5b.png,22,bamboo
+90,5b,5 of Bamboo,5b.png,22,bamboo
+91,5b,5 of Bamboo,5b.png,22,bamboo
+92,6b,6 of Bamboo,6b.png,23,bamboo
+93,6b,6 of Bamboo,6b.png,23,bamboo
+94,6b,6 of Bamboo,6b.png,23,bamboo
+95,6b,6 of Bamboo,6b.png,23,bamboo
+96,7b,7 of Bamboo,7b.png,24,bamboo
+97,7b,7 of Bamboo,7b.png,24,bamboo
+98,7b,7 of Bamboo,7b.png,24,bamboo
+99,7b,7 of Bamboo,7b.png,24,bamboo
+100,8b,8 of Bamboo,8b.png,25,bamboo
+101,8b,8 of Bamboo,8b.png,25,bamboo
+102,8b,8 of Bamboo,8b.png,25,bamboo
+103,8b,8 of Bamboo,8b.png,25,bamboo
+104,9b,9 of Bamboo,9b.png,26,bamboo
+105,9b,9 of Bamboo,9b.png,26,bamboo
+106,9b,9 of Bamboo,9b.png,26,bamboo
+107,9b,9 of Bamboo,9b.png,26,bamboo
+108,rd,Red Dragon,rd.png,27,dragon
+109,rd,Red Dragon,rd.png,27,dragon
+110,rd,Red Dragon,rd.png,27,dragon
+111,rd,Red Dragon,rd.png,27,dragon
+112,gd,Green Dragon,gd.png,28,dragon
+113,gd,Green Dragon,gd.png,28,dragon
+114,gd,Green Dragon,gd.png,28,dragon
+115,gd,Green Dragon,gd.png,28,dragon
+116,wd,White Dragon,wd.png,29,dragon
+117,wd,White Dragon,wd.png,29,dragon
+118,wd,White Dragon,wd.png,29,dragon
+119,wd,White Dragon,wd.png,29,dragon
+120,e,East Wind,e.png,30,wind
+121,e,East Wind,e.png,30,wind
+122,e,East Wind,e.png,30,wind
+123,e,East Wind,e.png,30,wind
+124,s,South Wind,s.png,31,wind
+125,s,South Wind,s.png,31,wind
+126,s,South Wind,s.png,31,wind
+127,s,South Wind,s.png,31,wind
+128,w,West Wind,w.png,32,wind
+129,w,West Wind,w.png,32,wind
+130,w,West Wind,w.png,32,wind
+131,w,West Wind,w.png,32,wind
+132,n,North Wind,n.png,33,wind
+133,n,North Wind,n.png,33,wind
+134,n,North Wind,n.png,33,wind
+135,n,North Wind,n.png,33,wind
