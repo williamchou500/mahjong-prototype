@@ -483,21 +483,26 @@ function player_discard() {
         player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${discard_data.id} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
         if (enemy_check_ron()) {
-            return;
+            console.log('gg');
         } else if (enemy_call_quad()) {
-            return;
+            enemy_draw(enemy_tiles);
+            enemy_check_tsumo(enemy_tiles);
+            enemy_discard();
         } else if (enemy_call_triplet()) {
-            return;
+            enemy_discard();
         } else if (enemy_call_sequence()) {
-            return;
+            enemy_discard();
         } else {
             enemy_draw(enemy_tiles);
-            enemy_check_tsumo();
+            enemy_check_tsumo(enemy_tiles);
             enemy_discard();
         };
     } else {
         alert('INVALID AMOUNT OF TILES SELECTED');
     }
+    
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    
     if (player_drawn_tile.innerHTML) {
         player_drawn_tile.innerHTML = '';
         form_player_hand(player_tiles);
@@ -640,7 +645,6 @@ function enemy_call_triplet() {
             document.getElementById(player_discarded).remove();
             document.getElementById(pair[0]).remove();
             document.getElementById(pair[1]).remove();
-            enemy_discard();
             return true;
         }
     }
@@ -673,7 +677,6 @@ function enemy_call_sequence() {
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
-            enemy_discard();
             return true;
         }
     }
@@ -708,9 +711,6 @@ function enemy_call_quad() {
             document.getElementById(triplet[2]).remove();
             document.getElementById(player_discarded).remove();
             enemy_called_quads++;
-            enemy_draw();
-            enemy_check_tsumo(enemy_tiles);
-            enemy_discard();
             return true;
         }
     }
