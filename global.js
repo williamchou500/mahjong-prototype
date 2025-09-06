@@ -539,7 +539,7 @@ function player_call_triplet() {
     let ids = [pair[0].id, pair[1].id, enemy_discarded];
     if (pair.length === 2) {
         if (tile_data[ids[0]].tile_id === tile_data[ids[1]].tile_id && tile_data[ids[1]].tile_id === tile_data[ids[2]].tile_id) {
-            player_called_tiles = [...player_called_tiles, ...ids, String(enemy_discarded)];
+            player_called_tiles = [...player_called_tiles, ...ids];
             console.log(player_called_tiles);
             player_tiles.splice(player_tiles.indexOf(Number(pair[0].id)), 1);
             player_tiles.splice(player_tiles.indexOf(Number(pair[1].id)), 1);
@@ -751,7 +751,7 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = check_hand(hand);
+    let checked = player_check_hand(hand);
 
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         hand.splice(tile_id, 1);
