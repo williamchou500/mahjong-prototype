@@ -14,6 +14,8 @@ let possible_tiles = [  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11
 
 let wall;
 
+let turns = 0;
+
 let player_hand = document.getElementById('playerHand');
 let player_discards = document.getElementById('playerDiscards');
 let player_called_tiles_pile = document.getElementById('playerCalledTiles');
@@ -36,8 +38,11 @@ let enemy_pairs_dict = {};
 let enemy_incomplete_sequences_tiles = [];
 let enemy_incomplete_sequences_dict = {};
 
-let first_turn; 
-let curr_turn;
+let discarded_orphans = [];
+let hand_orphans = [];
+let orphans = [0,8,9,17,18,26,27,28,29,30,31,32,33];
+let take_discarded_orphans = true;
+
 let tiles_remaining;
 let to_insert;
 let player_recently_discarded;
@@ -233,14 +238,18 @@ function pick_discard_tile(hand) {
     console.log('not useful: ', not_useful)
 
     if (not_useful.length === 1) {
+        console.log('pick1');
         return not_useful[0]
     } else if (not_useful.length > 1) {
         sort_by_unknown(not_useful)
+        console.log('unk', not_useful);
+        console.log('pick2');
         return not_useful[0]
         // eventually, should discard the one that has been played the most already ie the least risky tile but idk maybe some 
         // if not_useful is empty, should discard from sequence that is a single possibility (1, 3) 
         // PRIORITIZE GETTING RID OF 1 OR 9 FOR THESE CASES otherwise, check for least risky/least likely tile
     } else if (not_useful.length === 0) {
+        console.log('pick3');
         sort_by_unknown(categorized_useful[0]);
         sort_by_unknown(categorized_useful[1]);
         sort_by_unknown(categorized_useful[2]);
@@ -344,58 +353,28 @@ function setup() {
     console.log('Wall: ', wall);
 
 
-    let turns = ['player', 'enemy'];
-    shuffle(turns);
+    tiles_remaining = wall.length;
 
-    first_turn = turns[0]; 
-    curr_turn = turns[0];
-
-    tiles_remaining = wall.length
-
-    if (first_turn === 'player') {
-        for (let i = 1; i < 27; i+=2) {
-            to_insert = wall[tiles_remaining-i];
-            player_tiles.push(to_insert);
-            tile_data[to_insert].count--;
-            tile_counts[tile_data[to_insert].tile_id].player_unknown--;
+    for (let i = 1; i < 27; i+=2) {
+        to_insert = wall[tiles_remaining-i];
+        player_tiles.push(to_insert);
+         tile_data[to_insert].count--;
+         tile_counts[tile_data[to_insert].tile_id].player_unknown--;
         }
 
-        sort(player_tiles);
-        form_player_hand(player_tiles);
+    sort(player_tiles);
+    form_player_hand(player_tiles);
 
-        for (let i = 2; i < 27; i+=2) {
-            to_insert = wall[tiles_remaining-i];
-            enemy_tiles.push(to_insert);
-            tile_data[to_insert].count--;
-            tile_counts[tile_data[to_insert].tile_id].enemy_unknown--;
-        }
+    for (let i = 2; i < 27; i+=2) {
+        to_insert = wall[tiles_remaining-i];
+        enemy_tiles.push(to_insert);
+        tile_data[to_insert].count--;
+        tile_counts[tile_data[to_insert].tile_id].enemy_unknown--;
+    }
 
-        sort(enemy_tiles);
-        form_enemy_hand(enemy_tiles);
-        tiles_remaining = tiles_remaining - 26;
-
-    } else {
-        for (let i = 1; i < 27; i+=2) {
-            to_insert = wall[tiles_remaining-i];
-            enemy_tiles.push(to_insert);
-            tile_data[to_insert].count--;
-            tile_counts[tile_data[to_insert].tile_id].enemy_unknown--;
-        }
-
-        sort(enemy_tiles);
-        form_enemy_hand(enemy_tiles);
-
-        for (let i = 2; i < 27; i+=2) {
-            to_insert = wall[tiles_remaining-i];
-            player_tiles.push(to_insert);
-            tile_data[to_insert].count--;
-            tile_counts[tile_data[to_insert].tile_id].player_unknown--;
-        }
-
-        sort(player_tiles);
-        form_player_hand(player_tiles);
-        tiles_remaining = tiles_remaining - 26;
-    };
+    sort(enemy_tiles);
+    form_enemy_hand(enemy_tiles);
+    tiles_remaining = tiles_remaining - 26;
 
     wall = wall.slice(0, tiles_remaining)
     console.log('wall after hand formation', wall)
@@ -431,6 +410,7 @@ function player_draw(hand) {
     tiles_remaining--;
     tile_counts[tile_data[drawn_tile].tile_id].player_unknown--;
     hand.push(drawn_tile);
+    check_orphan();
     sort(hand);
 
     player_drawn_tile.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[drawn_tile].img_path}" id=${drawn_tile} height="80px" border="1px"></img>`)
@@ -474,6 +454,12 @@ function enemy_draw(hand) {
 function player_discard() {
     console.log('hiiii: ', player_drawn_tile.innerHTML);
 
+    turns++;
+
+    if (turns%5 === 0) {
+        gather_orphans();
+    }
+
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
@@ -482,6 +468,12 @@ function player_discard() {
         document.getElementById(discard_data.id).remove();
         player_discards.insertAdjacentHTML('beforeend', `<img src="tile_imgs/${tile_data[discard_data.id].img_path}" id=${discard_data.id} height="80px" border="1px"></img>`);
         player_tiles.splice(player_tiles.indexOf(Number(discard_data.id)), 1);
+        check_orphan();
+
+        if (orphans.includes(tile_data[player_recently_discarded].tile_id)) {
+            discarded_orphans.push(player_recently_discarded);
+        }
+
         if (enemy_check_ron()) {
             console.log('gg');
         } else if (enemy_call_quad()) {
@@ -798,8 +790,6 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     // need a if statement for 13 orphans!!!! [0,8,9,17,18,26,27,28,29,30,31,32,33] plus a pair
 }
 
-// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
-
 function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     hand.push(tile);
 
@@ -832,6 +822,73 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     // need a if statement for 13 orphans!!!!
 }
 
+function check_orphan() {
+    hand_orphans = [];
+
+    for (let i=0; i < player_tiles.length; i++) {
+        let tile = player_tiles[i];
+
+        if (orphans.includes(tile_data[tile].tile_id)) {
+            hand_orphans.push(tile);
+        }
+    }
+}
+
+function gather_orphans() {
+    let num_gathered = 0
+
+    if (take_discarded_orphans === true) {
+        take_discarded_orphans = false;
+
+        if (discarded_orphans.length === 0) {
+            console.log('BURN THE ORPHANAGE');
+            return;
+        } else {
+            for (let i=0; i<discarded_orphans.length; i++) {
+            document.getElementById(discarded_orphans[i]).remove();
+            player_tiles.splice(player_tiles.indexOf(Number(discarded_orphans[i])), 1);
+            enemy_tiles.push(discarded_orphans[i]);
+            tile_counts[tile_data[discarded_orphans[i]].tile_id].enemy_unknown--;
+            sort(enemy_tiles);
+            form_enemy_hand(enemy_tiles);
+            form_player_hand(player_tiles);
+            num_gathered++;
+        }
+
+        for (let i=0; i<num_gathered; i++) {
+            enemy_discard();
+        }
+
+        discarded_orphans = [];
+        }
+    } else if (take_discarded_orphans === false) {
+        take_discarded_orphans = true;
+
+        if (hand_orphans.length === 0) {
+            console.log('BURN THE ORPHANAGE');
+        } else {
+            for (let i=0; i<hand_orphans.length; i++) {
+                console.log(hand_orphans);
+                console.log(document.getElementById(hand_orphans[i]));
+                document.getElementById(hand_orphans[i]).remove();
+                player_tiles.splice(player_tiles.indexOf(Number(hand_orphans[i])), 1);
+                enemy_tiles.push(hand_orphans[i]);
+                tile_counts[tile_data[hand_orphans[i]].tile_id].enemy_unknown--;
+                sort(enemy_tiles);
+                form_enemy_hand(enemy_tiles);
+                form_player_hand(player_tiles);
+                num_gathered++;
+            }
+
+            for (let i=0; i<num_gathered; i++) {
+                enemy_discard();
+            }
+
+            hand_orphans = [];
+        }
+    }
+}
+
 function end_game() {
     alert('GAME OVER');
     return;
@@ -853,7 +910,7 @@ console.log(11,enemy_triplets_tiles)
 console.log(2,enemy_pairs_dict);
 console.log(22, enemy_pairs_tiles)
 console.log(3,enemy_incomplete_sequences_dict);
-console.log(33,enemy_incomplete_sequences_tiles)
+console.log(33,enemy_incomplete_sequences_tiles);
 
 // let dict = {'yo': ['1', '2']};
 // dict['yoo'] = 21;
