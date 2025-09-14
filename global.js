@@ -456,10 +456,6 @@ function player_discard() {
 
     turns++;
 
-    if (turns%5 === 0) {
-        gather_orphans();
-    }
-
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
         let discard_data = to_discard[0];
@@ -498,8 +494,12 @@ function player_discard() {
     if (player_drawn_tile.innerHTML) {
         player_drawn_tile.innerHTML = '';
         form_player_hand(player_tiles);
-        return;
     }
+
+    if (turns%5 === 0) {
+        gather_orphans();
+    }
+
     return;
 }
 
