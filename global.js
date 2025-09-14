@@ -839,6 +839,7 @@ function gather_orphans() {
 
     if (take_discarded_orphans === true) {
         take_discarded_orphans = false;
+        console.log('discorph');
 
         if (discarded_orphans.length === 0) {
             console.log('BURN THE ORPHANAGE');
@@ -846,7 +847,6 @@ function gather_orphans() {
         } else {
             for (let i=0; i<discarded_orphans.length; i++) {
             document.getElementById(discarded_orphans[i]).remove();
-            player_tiles.splice(player_tiles.indexOf(Number(discarded_orphans[i])), 1);
             enemy_tiles.push(discarded_orphans[i]);
             tile_counts[tile_data[discarded_orphans[i]].tile_id].enemy_unknown--;
             sort(enemy_tiles);
@@ -863,6 +863,7 @@ function gather_orphans() {
         }
     } else if (take_discarded_orphans === false) {
         take_discarded_orphans = true;
+        console.log('handor');
 
         if (hand_orphans.length === 0) {
             console.log('BURN THE ORPHANAGE');
