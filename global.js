@@ -102,11 +102,16 @@ function player_check_hand(hand) {
             triplets.push(hand[i-2]);
             triplets.push(hand[i-1]);
             triplets.push(hand[i]);
-        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+        } 
+    }
+
+    for (let i = 1; i < hand.length; i++) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
         }
     }
+
 
     for (let i = 2; i < hand.length; i++) {
 
@@ -116,13 +121,17 @@ function player_check_hand(hand) {
             sequence_tiles.push(hand[i-2]);
             sequence_tiles.push(hand[i-1]);
             sequence_tiles.push(hand[i]);
-        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+        } 
+    }
+    
+    for (let i = 1; i < hand.length; i++) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category) && !sequence_tiles.includes(hand[i])) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
 
             // NEED TO SOMEHOW SAVE THE TILE THAT WOULD BE NEEDED TO COMPLETE THE SEQUENCE SO THE ENEMY CAN CALL ON SEQUENCES
 
-        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category) && !sequence_tiles.includes(hand[i])) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
         }
@@ -161,7 +170,7 @@ function enemy_check_hand(hand) {
             } 
         }
         
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
             enemy_pairs_tiles.push(tile_data[hand[i]].tile_id);
@@ -184,7 +193,7 @@ function enemy_check_hand(hand) {
             }
         }
         
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 1 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category) && !sequence_tiles.includes(hand[i])) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
             enemy_incomplete_sequences_tiles.push(tile_data[hand[i]].tile_id - 2);
@@ -192,7 +201,7 @@ function enemy_check_hand(hand) {
             enemy_incomplete_sequences_dict[tile_data[hand[i]].tile_id - 2] = [hand[i-1], hand[i]];
             enemy_incomplete_sequences_dict[tile_data[hand[i]].tile_id + 1] = [hand[i-1], hand[i]];
 
-        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category)) {
+        } else if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id - 2 && tile_data[hand[i-1]].category === tile_data[hand[i]].category && !['dragon', 'wind'].includes(tile_data[hand[i]].category) && !sequence_tiles.includes(hand[i])) {
             incomplete_sequences.push(hand[i-1]);
             incomplete_sequences.push(hand[i]);
             enemy_incomplete_sequences_tiles.push(tile_data[hand[i]].tile_id - 1);
@@ -721,7 +730,7 @@ function player_check_tsumo(hand=player_tiles) {
     
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
+    } else if ((checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2) === 1) {
         alert('yay u win');
         return true;
     } else if (checked[2]. length === 7) {
@@ -748,7 +757,7 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         hand.splice(tile_id, 1);
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 === 4 && checked[2].length/2 === 1) {
+    } else if ((checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3) === 4 && checked[2].length/2 === 1) {
         alert('yay u win');
         hand.splice(tile_id, 1);
         return true;
@@ -777,7 +786,7 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     
     if (hand.length != 14) {
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 + (enemy_called_tiles.length - enemy_called_quads)/3 === 4 && checked[2].length/2 === 1) {
+    } else if ((checked[0].length/3 + checked[1].length/3 + (player_called_tiles.length - player_called_quads)/3 + (enemy_called_tiles.length - enemy_called_quads)/3) === 4 && checked[2].length/2 === 1) {
         alert('yay u lose');
         return true;
     } else if (checked[2]. length === 7) {
@@ -803,7 +812,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
         hand.splice(tile_id, 1);
         console.log(hand);
         return false;
-    } else if (checked[0].length/3 + checked[1].length/3 + (enemy_called_tiles.length - enemy_called_quads)/3 === 4 && checked[2].length/2 === 1) {
+    } else if ((checked[0].length/3 + checked[1].length/3 + (enemy_called_tiles.length - enemy_called_quads)/3 === 4) && checked[2].length/2 === 1) {
         alert('yay u lose');
         hand.splice(tile_id, 1);
         console.log(hand);
@@ -896,23 +905,26 @@ function end_game() {
 }
 
 setup();
-console.log('counts', tile_counts);
-sort_by_unknown(enemy_tiles);
-console.log('unknown', enemy_tiles);
+// console.log('counts', tile_counts);
+// sort_by_unknown(enemy_tiles);
+// console.log('unknown', enemy_tiles);
 
-// enemy_tiles = [0,1,3,7,17,18,22,26,31,36,44,50,80];
+// enemy_tiles = [0,1,3,17,18,19,26,31,34,36,44,45,46];
 // form_enemy_hand(enemy_tiles);
-// player_tiles = [2,8,61,62,63,64,65,66,67,68,69,70,71];
+// player_tiles =  [37,90,91,92,93,94,95,96,97,98,99,100,101,101];
 // form_player_hand(player_tiles);
+// wall.push(5);
+// console.log('doop', player_check_hand(player_tiles));
 
-enemy_check_hand(enemy_tiles);
-console.log(1,enemy_triplets_dict);
-console.log(11,enemy_triplets_tiles)
-console.log(2,enemy_pairs_dict);
-console.log(22, enemy_pairs_tiles)
-console.log(3,enemy_incomplete_sequences_dict);
-console.log(33,enemy_incomplete_sequences_tiles);
+// enemy_check_hand(enemy_tiles);
+// console.log(1,enemy_triplets_dict);
+// console.log(11,enemy_triplets_tiles)
+// console.log(2,enemy_pairs_dict);
+// console.log(22, enemy_pairs_tiles)
+// console.log(3,enemy_incomplete_sequences_dict);
+// console.log(33,enemy_incomplete_sequences_tiles);
 
+// console.log('waaa', enemy_check_hand(enemy_tiles));
 // let dict = {'yo': ['1', '2']};
 // dict['yoo'] = 21;
 // console.log('dict', dict)
