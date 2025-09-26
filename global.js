@@ -114,6 +114,7 @@ function get_unique (hand) {
 function player_check_hand(hand) {
     let triplets = [];
     let pairs = [];
+    let pairs_tile_ids = [];
     let sequence_tiles = [];
     let incomplete_sequences = [];
     player_triplets = 0;
@@ -132,7 +133,9 @@ function player_check_hand(hand) {
 
     for (let i = 1; i < hand.length; i++) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
-            pairs.push(tile_data[hand[i]].tile_id);
+            pairs.push(hand[i-1]);
+            pairs.push(hand[i]);
+            pairs_tile_ids.push(tile_data[hand[i]].tile_id);
             player_pairs++;
         }
     }
@@ -152,12 +155,12 @@ function player_check_hand(hand) {
 
             let tile_id = tile_data[unique[i-2]].tile_id;
 
-            if (pairs.includes(tile_id) && pairs.includes(tile_id + 1) && pairs.includes(tile_id + 2)) {
+            if (pairs_tile_ids.includes(tile_id) && pairs_tile_ids.includes(tile_id + 1) && pairs_tile_ids.includes(tile_id + 2)) {
                 player_sequences++;
                 player_pairs = player_pairs - 3;
-                pairs.splice(pairs.indexOf(tile_id), 1);
-                pairs.splice(pairs.indexOf(tile_id + 1), 1);
-                pairs.splice(pairs.indexOf(tile_id + 2), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id + 1), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id + 2), 1);
             }
         } 
     }
@@ -190,6 +193,7 @@ function player_check_hand(hand) {
 function enemy_check_hand(hand) {
     let triplets = [];
     let pairs = [];
+    let pairs_tile_ids = [];
     let sequence_tiles = [];
     let incomplete_sequences = [];
 
@@ -216,7 +220,9 @@ function enemy_check_hand(hand) {
 
     for (let i = 1; i < hand.length; i++) {
         if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
-            pairs.push(tile_data[hand[i-1]].tile_id);
+            pairs.push(hand[i-1]);
+            pairs.push(hand[i]);
+            pairs_tile_ids.push(tile_data[hand[i-1]].tile_id);
             enemy_pairs_tiles.push(tile_data[hand[i]].tile_id);
             enemy_pairs_dict[tile_data[hand[i]].tile_id] = [hand[i-1], hand[i]];
             enemy_pairs++;
@@ -238,12 +244,12 @@ function enemy_check_hand(hand) {
 
             let tile_id = tile_data[unique[i-2]].tile_id;
 
-            if (pairs.includes(tile_id) && pairs.includes(tile_id + 1) && pairs.includes(tile_id + 2)) {
+            if (pairs_tile_ids.includes(tile_id) && pairs_tile_ids.includes(tile_id + 1) && pairs_tile_ids.includes(tile_id + 2)) {
                 enemy_sequences++;
                 enemy_pairs = enemy_pairs - 3;
-                pairs.splice(pairs.indexOf(tile_id), 1);
-                pairs.splice(pairs.indexOf(tile_id + 1), 1);
-                pairs.splice(pairs.indexOf(tile_id + 2), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id + 1), 1);
+                pairs_tile_ids.splice(pairs_tile_ids.indexOf(tile_id + 2), 1);
             }
         } 
     }
@@ -971,8 +977,10 @@ setup();
 
 // enemy_tiles = [0,1,3,17,18,19,26,31,34,36,44,45,46];
 // form_enemy_hand(enemy_tiles);
-// enemy_tiles =  [1,2,3,4,5,6,48,49,52,53,58,59,82];
+// enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
+// player_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
+// form_player_hand(player_tiles);
 // wall.push(83);
 // wall.push(110);
 // console.log('doop', player_check_hand(player_tiles));
