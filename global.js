@@ -784,7 +784,43 @@ function enemy_call_quad() {
     return false;
 }
 
-// NEED TO ACCOUNT FOR CALLED TILES EVENTUALLY
+function check_13_orphans(hand) {
+    let ids = [];
+    let counter = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+
+    for (let i = 0; i < hand.length; i++) {
+        let id = tile_data[hand[i]].tile_id;
+        ids.push(id);
+
+        if (!orphans.includes(id)) {
+            console.log(13, 1)
+            return false;
+        } else if (counter[id] > 2) {
+            console.log(13, 2);
+            return false;
+        } else {
+            counter[id]++;
+        }
+    }
+
+    console.log('IDS', ids);
+
+    for (let i = 0; i < orphans.length; i++) {
+        if (!ids.includes(orphans[i])) {
+            console.log(13, 3);
+            console.log(ids, orphans[i]);
+            return false;
+        }
+    }
+
+    let pair = player_check_hand(hand)[2]
+
+    if (pair.length == 2 && orphans.includes(tile_data[pair[0]].tile_id)) {
+        return true;
+    }
+
+    return false;
+}
 
 function player_check_tsumo(hand=player_tiles) {
     // after drawing a tile, hand should have 14 tiles
@@ -793,6 +829,8 @@ function player_check_tsumo(hand=player_tiles) {
     let checked = player_check_hand(hand);
 
     console.log(checked);
+
+    console.log("CHECK", check_13_orphans(hand));
     
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         return false;
@@ -800,6 +838,9 @@ function player_check_tsumo(hand=player_tiles) {
         alert('yay u win');
         return true;
     } else if (checked[2].length === 7) {
+        alert('yay u win');
+        return true;
+    } else if (check_13_orphans(hand)) {
         alert('yay u win');
         return true;
     } else {
@@ -825,11 +866,12 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
         return false;
     } else if ((player_triplets + player_sequences + (player_called_tiles.length - player_called_quads)/3 === 4) && (player_pairs.length) === 1) {
         alert('yay u win');
-        hand.splice(tile_id, 1);
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u win');
-        hand.splice(tile_id, 1);
+        return true;
+    } else if (check_13_orphans(hand)) {
+        alert('yay u win');
         return true;
     } else {
         hand.splice(tile_id, 1);
@@ -858,6 +900,9 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     } else if (checked[2]. length === 7) {
         alert('yay u lose');
         return true;
+    } else if (check_13_orphans(hand)) {
+        alert('yay u lose');
+        return true;
     } else {
         return false;
     }
@@ -880,13 +925,14 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
         return false;
     } else if ((enemy_triplets + enemy_sequences + (enemy_called_tiles.length - enemy_called_quads)/3 === 4) && enemy_pairs === 1) {
         alert('yay u lose');
-        hand.splice(tile_id, 1);
         console.log(hand);
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u lose');
-        hand.splice(tile_id, 1);
         console.log(hand);
+        return true;
+    } else if (check_13_orphans(hand)) {
+        alert('yay u lose');
         return true;
     } else {
         hand.splice(tile_id, 1);
@@ -979,10 +1025,10 @@ setup();
 // form_enemy_hand(enemy_tiles);
 // enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
-// player_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
-// form_player_hand(player_tiles);
+player_tiles = [0,32,38,71,72,107,108,112,116,123,124,131,132];
+form_player_hand(player_tiles);
 // wall.push(83);
-// wall.push(110);
+wall.push(110);
 // console.log('doop', player_check_hand(player_tiles));
 
 // enemy_check_hand(enemy_tiles);
