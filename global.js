@@ -30,6 +30,7 @@ let player_called_quads = 0;
 let player_pairs = 0;
 let player_triplets = 0;
 let player_sequences = 0;
+let player_quads = 0;
 
 let enemy_tiles = [];
 let enemy_called_tiles = [];
@@ -43,6 +44,7 @@ let enemy_incomplete_sequences_dict = {};
 let enemy_pairs = 0;
 let enemy_triplets = 0;
 let enemy_sequences = 0;
+let enemy_quads = 0;
 
 let discarded_orphans = [];
 let hand_orphans = [];
@@ -112,18 +114,30 @@ function get_unique (hand) {
 }
 
 function player_check_hand(hand) {
+    let quads = [];
     let triplets = [];
     let pairs = [];
     let pairs_tile_ids = [];
     let sequence_tiles = [];
     let incomplete_sequences = [];
+    player_quads = 0;
     player_triplets = 0;
     player_pairs = 0;
     player_sequences = 0;
     player_called_quads = 0;
 
+    for (let i = 3; i < hand.length; i++) {
+        if (tile_data[hand[i-3]].tile_id === tile_data[hand[i-2]].tile_id && tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+            quads.push(hand[i-3]);
+            quads.push(hand[i-2]);
+            quads.push(hand[i-1]);
+            quads.push(hand[i]);
+            player_quads++;
+        } 
+    }
+
     for (let i = 2; i < hand.length; i++) {
-        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+        if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !quads.includes(hand[i])) {
             triplets.push(hand[i-2]);
             triplets.push(hand[i-1]);
             triplets.push(hand[i]);
@@ -132,7 +146,7 @@ function player_check_hand(hand) {
     }
 
     for (let i = 1; i < hand.length; i++) {
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])  && !quads.includes(hand[i])) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
             pairs_tile_ids.push(tile_data[hand[i]].tile_id);
@@ -191,6 +205,7 @@ function player_check_hand(hand) {
 }
 
 function enemy_check_hand(hand) {
+    let quads = [];
     let triplets = [];
     let pairs = [];
     let pairs_tile_ids = [];
@@ -206,9 +221,20 @@ function enemy_check_hand(hand) {
     enemy_triplets = 0;
     enemy_sequences = 0;
     enemy_pairs = 0;
+    enemy_quads = 0;
+
+    for (let i = 3; i < hand.length; i++) {
+        if (tile_data[hand[i-3]].tile_id === tile_data[hand[i-2]].tile_id && tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+            quads.push(hand[i-3]);
+            quads.push(hand[i-2]);
+            quads.push(hand[i-1]);
+            quads.push(hand[i]);
+            enemy_quads++;
+        } 
+    }
 
     for (let i = 2; i < hand.length; i++) {
-            if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id) {
+            if (tile_data[hand[i-2]].tile_id === tile_data[hand[i-1]].tile_id && tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !quads.includes(hand[i])) {
                 triplets.push(hand[i-2]);
                 triplets.push(hand[i-1]);
                 triplets.push(hand[i]);
@@ -219,7 +245,7 @@ function enemy_check_hand(hand) {
     }
 
     for (let i = 1; i < hand.length; i++) {
-        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i])) {
+        if (tile_data[hand[i-1]].tile_id === tile_data[hand[i]].tile_id && !triplets.includes(hand[i]) && !quads.includes(hand[i])) {
             pairs.push(hand[i-1]);
             pairs.push(hand[i]);
             pairs_tile_ids.push(tile_data[hand[i-1]].tile_id);
@@ -686,6 +712,10 @@ function player_call_quad() {
     }   
 }
 
+function player_reveal_quad() {
+    return;
+}
+
 function enemy_call_triplet() {
     let player_discarded = player_recently_discarded;
     console.log("tpd", player_discarded);
@@ -784,6 +814,10 @@ function enemy_call_quad() {
     return false;
 }
 
+function enemy_reveal_quad() {
+    return;
+}
+
 function check_13_orphans(hand) {
     let ids = [];
     let counter = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -831,6 +865,8 @@ function player_check_tsumo(hand=player_tiles) {
     console.log(checked);
 
     console.log("CHECK", check_13_orphans(hand));
+
+    console.log('QUAN', player_quads)
     
     if (hand.length + (player_called_tiles.length - player_called_quads) != 14) {
         return false;
@@ -843,7 +879,7 @@ function player_check_tsumo(hand=player_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u win');
         return true;
-    } else if (player_called_quads === 3 && player_pairs === 1) {
+    } else if (player_quads === 3 && player_pairs === 1) {
         alert('yay u win');
         return true;
     } else {
@@ -876,7 +912,7 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u win');
         return true;
-    } else if (player_called_quads === 3 && player_pairs === 1) {
+    } else if (player_quads === 3 && player_pairs === 1) {
         alert('yay u win');
         return true;
     } else {
@@ -909,7 +945,7 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u lose');
         return true;
-    } else if (enemy_called_quads === 3 && enemy_pairs === 1) {
+    } else if (enemy_quads === 3 && enemy_pairs === 1) {
         alert('yay u lose');
         return true;
     } else {
@@ -943,7 +979,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u lose');
         return true;
-    } else if (enemy_called_quads === 3 && enemy_pairs === 1) {
+    } else if (enemy_quads === 3 && enemy_pairs === 1) {
         alert('yay u lose');
         return true;
     } else {
