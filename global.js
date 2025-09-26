@@ -1073,10 +1073,10 @@ setup();
 // form_enemy_hand(enemy_tiles);
 // enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
-player_tiles = [0,1,2,3,4,5,6,7,8,9,10,11,12];
-form_player_hand(player_tiles);
+// player_tiles = [0,1,2,3,4,5,6,7,8,9,10,11,12];
+// form_player_hand(player_tiles);
 // wall.push(83);
-wall.push(14);
+// wall.push(14);
 // console.log('doop', player_check_hand(player_tiles));
 
 // enemy_check_hand(enemy_tiles);
