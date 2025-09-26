@@ -843,6 +843,9 @@ function player_check_tsumo(hand=player_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u win');
         return true;
+    } else if (player_called_quads === 3 && player_pairs === 1) {
+        alert('yay u win');
+        return true;
     } else {
         return false;
     }
@@ -871,6 +874,9 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
         alert('yay u win');
         return true;
     } else if (check_13_orphans(hand)) {
+        alert('yay u win');
+        return true;
+    } else if (player_called_quads === 3 && player_pairs === 1) {
         alert('yay u win');
         return true;
     } else {
@@ -903,6 +909,9 @@ function enemy_check_tsumo(hand=enemy_tiles) {
     } else if (check_13_orphans(hand)) {
         alert('yay u lose');
         return true;
+    } else if (enemy_called_quads === 3 && enemy_pairs === 1) {
+        alert('yay u lose');
+        return true;
     } else {
         return false;
     }
@@ -932,6 +941,9 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
         console.log(hand);
         return true;
     } else if (check_13_orphans(hand)) {
+        alert('yay u lose');
+        return true;
+    } else if (enemy_called_quads === 3 && enemy_pairs === 1) {
         alert('yay u lose');
         return true;
     } else {
@@ -1025,10 +1037,10 @@ setup();
 // form_enemy_hand(enemy_tiles);
 // enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
-player_tiles = [0,32,38,71,72,107,108,112,116,123,124,131,132];
+player_tiles = [0,1,2,3,4,5,6,7,8,9,10,11,12];
 form_player_hand(player_tiles);
 // wall.push(83);
-wall.push(110);
+wall.push(14);
 // console.log('doop', player_check_hand(player_tiles));
 
 // enemy_check_hand(enemy_tiles);
