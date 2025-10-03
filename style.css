@@ -50,3 +50,10 @@ p {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+#playerCards {
+    display: flex;
+    overflow: auto;
+    height: 400px;
+    width: 400px;
+}

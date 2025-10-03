@@ -60,6 +60,8 @@ let categorized_useful;
 let useful;
 let not_useful;
 
+let game_started = false;
+
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
       desc: String(row.desc),
@@ -556,6 +558,7 @@ function player_discard() {
     console.log('hiiii: ', player_drawn_tile.innerHTML);
 
     turns++;
+    game_started = true;
 
     let to_discard = document.getElementsByClassName('selected');
     if (to_discard.length === 1) {
@@ -642,6 +645,7 @@ function player_call_triplet() {
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
+            tile_counts[tile_data[ids[0]].tile_id].enemy_unknown = tile_counts[tile_data[ids[0]].tile_id].enemy_unknown - 2;
         } else {
             alert('ur dumb 2')
         }
@@ -672,6 +676,8 @@ function player_call_sequence() {
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
+            tile_counts[incomplete_sequence[0].id].enemy_unknown--;
+            tile_counts[incomplete_sequence[1].id].enemy_unknown--;
         } else {
             alert('ur dumb 2');
         }
@@ -704,6 +710,7 @@ function player_call_quad() {
             document.getElementById(ids[2]).remove();
             document.getElementById(ids[3]).remove();
             player_called_quads++;
+            tile_counts[tile_data[ids[0]].tile_id].enemy_unknown = tile_counts[tile_data[ids[0]].tile_id].enemy_unknown - 3;
         } else {
             alert('ur dumb 2')
         }
@@ -742,6 +749,7 @@ function enemy_call_triplet() {
             document.getElementById(player_discarded).remove();
             document.getElementById(pair[0]).remove();
             document.getElementById(pair[1]).remove();
+            tile_counts[tile_data[pair[0]].tile_id].enemy_unknown = tile_counts[tile_data[pair[0]].tile_id].player_unknown - 2;
             return true;
         }
     }
@@ -774,6 +782,8 @@ function enemy_call_sequence() {
             document.getElementById(ids[0]).remove();
             document.getElementById(ids[1]).remove();
             document.getElementById(ids[2]).remove();
+            tile_counts[incomplete_sequence[0].id].player_unknown--;
+            tile_counts[incomplete_sequence[1].id].player_unknown--;
             return true;
         }
     }
@@ -808,6 +818,7 @@ function enemy_call_quad() {
             document.getElementById(triplet[2]).remove();
             document.getElementById(player_discarded).remove();
             enemy_called_quads++;
+            tile_counts[tile_data[triplet[0]].tile_id].enemy_unknown = tile_counts[tile_data[pair[0]].tile_id].player_unknown - 3;
             return true;
         }
     }
@@ -962,7 +973,7 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
 
     let tile_id = hand.indexOf(tile);
 
-    let checked = player_check_hand(hand);
+    let checked = enemy_check_hand(hand);
 
     if (hand.length != 14) {
         hand.splice(tile_id, 1);
