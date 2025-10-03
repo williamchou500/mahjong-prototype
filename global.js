@@ -60,8 +60,6 @@ let categorized_useful;
 let useful;
 let not_useful;
 
-let game_started = false;
-
 const tile_data = await d3.csv('tiles.csv', (row) => ({
       tile: String(row.tile),
       desc: String(row.desc),
@@ -744,6 +742,8 @@ function player_reveal_quad() {
         document.getElementById(quads[3]).remove();
         player_called_quads++
         tile_counts[tile_data[quads[0]].tile_id].enemy_unknown = tile_counts[tile_data[quads[0]].tile_id].enemy_unknown - 4;
+        player_tiles.push(wall[0]);
+        wall.splice(0,1);
     return;
 }
 
@@ -869,7 +869,8 @@ function enemy_reveal_quad() {
         document.getElementById(quads[3]).remove();
         enemy_called_quads++
         tile_counts[tile_data[quads[0]].tile_id].player_unknown = tile_counts[tile_data[quads[0]].tile_id].player_unknown - 4;
-        enemy_draw(enemy_tiles);
+        enemy_tiles.push(wall[0]);
+        wall.splice(0,1);
         enemy_discard();
 }
 
