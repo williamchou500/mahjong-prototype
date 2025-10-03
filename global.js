@@ -575,7 +575,6 @@ function player_discard() {
         if (enemy_check_ron()) {
             console.log('gg');
         } else if (enemy_call_quad()) {
-            enemy_draw(enemy_tiles);
             enemy_check_tsumo(enemy_tiles);
             enemy_discard();
         } else if (enemy_call_triplet()) {
