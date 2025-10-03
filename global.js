@@ -575,6 +575,7 @@ function player_discard() {
         if (enemy_check_ron()) {
             console.log('gg');
         } else if (enemy_call_quad()) {
+            enemy_draw(enemy_tiles);
             enemy_check_tsumo(enemy_tiles);
             enemy_discard();
         } else if (enemy_call_triplet()) {
@@ -755,6 +756,7 @@ function player_reveal_quad() {
 
 function enemy_call_triplet() {
     let player_discarded = player_recently_discarded;
+    enemy_check_hand(enemy_tiles);
     console.log("tpd", player_discarded);
 
     console.log(enemy_pairs_dict[player_discarded]);
@@ -1138,9 +1140,22 @@ setup();
 
 // enemy_tiles = [0,1,3,17,18,19,26,31,34,36,44,45,46];
 // form_enemy_hand(enemy_tiles);
+
+
+
+
+
+
 // enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
-// player_tiles = [0,1,2,4,5,6,7,8,9,10,11,12,13];
+// player_tiles = [0,99,100,101,102,103,104,105,106,107,108,109,110];
+// form_player_hand(player_tiles);
+
+
+
+
+
+
 // wall.push(3);
 // wall.push(101);
 // form_player_hand(player_tiles);
