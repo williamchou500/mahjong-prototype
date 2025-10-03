@@ -203,7 +203,7 @@ function player_check_hand(hand) {
     console.log('NEW STUFF', [player_triplets, player_sequences, player_pairs]);
     console.log('UNIQUE', unique);
 
-    return [triplets, sequence_tiles, pairs, incomplete_sequences];
+    return [triplets, sequence_tiles, pairs, incomplete_sequences, quads];
 }
 
 function enemy_check_hand(hand) {
@@ -315,7 +315,7 @@ function enemy_check_hand(hand) {
     console.log('E NEW STUFF', [enemy_triplets, enemy_sequences, enemy_pairs]);
     console.log('E UNIQUE', unique);
 
-    return [triplets, sequence_tiles, pairs, incomplete_sequences];
+    return [triplets, sequence_tiles, pairs, incomplete_sequences, quads];
 }
 
 function pick_discard_tile(hand) {
@@ -551,6 +551,7 @@ function enemy_draw(hand) {
     hand.push(drawn_tile);
     sort(hand);
     form_enemy_hand(enemy_tiles);
+    enemy_reveal_quad();
     return;
 }
 
@@ -719,7 +720,30 @@ function player_call_quad() {
     }   
 }
 
+document.getElementById('playerRevealKanBtn').addEventListener('click', function() {
+    player_reveal_quad();
+})
+
 function player_reveal_quad() {
+    quads = enemy_check_hand(enemy_tiles)[4]
+    
+    if (quads.length != 4) {
+        return;
+    } else 
+        player_tiles.splice(player_tiles.indexOf(Number(quads[0])), 1);
+        player_tiles.splice(player_tiles.indexOf(Number(quads[1])), 1);
+        player_tiles.splice(player_tiles.indexOf(Number(quads[2])), 1);
+        player_tiles.splice(player_tiles.indexOf(Number(quads[2])), 1);
+        player_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[0]].img_path}" height="80px" border="1px"></img>`);
+        player_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[1]].img_path}" height="80px" border="1px"></img>`);
+        player_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[2]].img_path}" height="80px" border="1px"></img>`);
+        player_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[3]].img_path}" height="80px" border="1px"></img>`);
+        document.getElementById(quads[0]).remove();
+        document.getElementById(quads[1]).remove();
+        document.getElementById(quads[2]).remove();
+        document.getElementById(quads[3]).remove();
+        player_called_quads++
+        tile_counts[tile_data[quads[0]].tile_id].enemy_unknown = tile_counts[tile_data[quads[0]].tile_id].enemy_unknown - 4;
     return;
 }
 
@@ -818,7 +842,7 @@ function enemy_call_quad() {
             document.getElementById(triplet[2]).remove();
             document.getElementById(player_discarded).remove();
             enemy_called_quads++;
-            tile_counts[tile_data[triplet[0]].tile_id].enemy_unknown = tile_counts[tile_data[pair[0]].tile_id].player_unknown - 3;
+            tile_counts[tile_data[triplet[0]].tile_id].enemy_unknown = tile_counts[tile_data[triplet[0]].tile_id].player_unknown - 3;
             return true;
         }
     }
@@ -826,7 +850,27 @@ function enemy_call_quad() {
 }
 
 function enemy_reveal_quad() {
-    return;
+    quads = enemy_check_hand(enemy_tiles)[4]
+    
+    if (quads.length != 4) {
+        return;
+    } else 
+        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[0])), 1);
+        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[1])), 1);
+        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[2])), 1);
+        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[2])), 1);
+        enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[0]].img_path}" height="80px" border="1px"></img>`);
+        enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[1]].img_path}" height="80px" border="1px"></img>`);
+        enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[2]].img_path}" height="80px" border="1px"></img>`);
+        enemy_called_tiles_pile.insertAdjacentHTML('afterbegin', `<img src="tile_imgs/${tile_data[quads[3]].img_path}" height="80px" border="1px"></img>`);
+        document.getElementById(quads[0]).remove();
+        document.getElementById(quads[1]).remove();
+        document.getElementById(quads[2]).remove();
+        document.getElementById(quads[3]).remove();
+        enemy_called_quads++
+        tile_counts[tile_data[quads[0]].tile_id].player_unknown = tile_counts[tile_data[quads[0]].tile_id].player_unknown - 4;
+        enemy_draw(enemy_tiles);
+        enemy_discard();
 }
 
 function check_13_orphans(hand) {
