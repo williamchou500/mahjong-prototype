@@ -731,10 +731,7 @@ function player_reveal_quad() {
     if (quads.length < 4) {
         return;
     } else {
-        player_tiles.splice(player_tiles.indexOf(Number(quads[0])), 1);
-        player_tiles.splice(player_tiles.indexOf(Number(quads[1])), 1);
-        player_tiles.splice(player_tiles.indexOf(Number(quads[2])), 1);
-        player_tiles.splice(player_tiles.indexOf(Number(quads[2])), 1);
+        player_tiles.splice(player_tiles.indexOf(Number(quads[0])), 4);
         document.getElementById(quads[0]).remove();
         document.getElementById(quads[1]).remove();
         document.getElementById(quads[2]).remove();
@@ -748,6 +745,9 @@ function player_reveal_quad() {
         player_tiles.push(wall[0]);
         wall.splice(0,1);
         num_quads--;
+        player_called_quads++;
+        form_player_hand(player_tiles);
+        player_called_tiles = [...player_called_tiles, ...quads.splice(0,4)];
     }
     if (num_quads != 0) {
         player_reveal_quad();
@@ -863,10 +863,7 @@ function enemy_reveal_quad() {
     if (quads.length < 4) {
         return;
     } else 
-        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[0])), 1);
-        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[1])), 1);
-        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[2])), 1);
-        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[2])), 1);
+        enemy_tiles.splice(enemy_tiles.indexOf(Number(quads[0])), 4);
         document.getElementById(quads[0]).remove();
         document.getElementById(quads[1]).remove();
         document.getElementById(quads[2]).remove();
@@ -881,7 +878,8 @@ function enemy_reveal_quad() {
         wall.splice(0,1);
         enemy_discard();
         num_quads--;
-
+        enemy_called_quads++;
+        enemy_called_tiles = [...enemy_called_tiles, ...quads.splice(0,4)];
     if (num_quads != 0) {
         enemy_reveal_quad();
     }
@@ -1142,9 +1140,11 @@ setup();
 // form_enemy_hand(enemy_tiles);
 // enemy_tiles = [1,2,3,4,5,6,48,49,52,53,58,59,82];
 // form_enemy_hand(enemy_tiles);
-player_tiles = [0,1,2,4,5,6,7,8,9,10,11,12,13];
+enemy_tiles = [0,1,2,4,5,6,7,8,9,10,11,12,13];
 wall.push(3);
-form_player_hand(player_tiles);
+wall.push(101);
+form_enemy_hand(enemy_tiles);
+// form_player_hand(player_tiles);
 // wall.push(83);
 // wall.push(14);
 // console.log('doop', player_check_hand(player_tiles));
