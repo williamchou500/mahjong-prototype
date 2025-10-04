@@ -824,8 +824,10 @@ function enemy_call_sequence() {
 
 function enemy_call_quad() {
     let player_discarded = player_recently_discarded;
+    enemy_check_hand(enemy_tiles);
     console.log("qpd", player_discarded);
     console.log(enemy_triplets_dict[tile_data[player_discarded].tile_id]);
+    console.log(enemy_triplets_tiles);
 
     if (!enemy_triplets_tiles.includes(tile_data[player_discarded].tile_id)) {
         console.log('no trip')
