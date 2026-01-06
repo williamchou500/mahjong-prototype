@@ -1232,6 +1232,6 @@ setup();
 // dict['yoo'] = 21;
 // console.log('dict', dict)
 
-player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
-wall.push(29);
-form_player_hand(player_tiles);
+// player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
+// wall.push(29);
+// form_player_hand(player_tiles);
