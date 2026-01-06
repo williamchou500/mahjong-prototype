@@ -20,9 +20,11 @@ let player_hand = document.getElementById('playerHand');
 let player_discards = document.getElementById('playerDiscards');
 let player_called_tiles_pile = document.getElementById('playerCalledTiles');
 let player_drawn_tile = document.getElementById('playerDrawnTile');
+let player_score = document.getElementById('playerScore');
 let enemy_hand = document.getElementById('enemyHand');
 let enemy_discards = document.getElementById('enemyDiscards');
 let enemy_called_tiles_pile = document.getElementById('enemyCalledTiles');
+let enemy_score = document.getElementById('enemyScore');
 
 let player_tiles = [];
 let player_called_tiles = [];
@@ -160,6 +162,9 @@ function player_check_hand(hand) {
     for (let i = 2; i < unique.length; i++) {
 
         // THIS CURRENT PART OF THE CODE DOES NOT REGISTER [b1,b1,b2,b2,b3,b3] AS A COMPLETE SEQUENCE CURRENTLY
+        if (triplets.includes(unique[i]) || triplets.includes(unique[i-1]) || triplets.includes(unique[i-2]) ) {
+            continue;
+        }
 
         if (tile_data[unique[i-2]].tile_id === tile_data[unique[i-1]].tile_id - 1 && tile_data[unique[i-1]].tile_id === tile_data[unique[i]].tile_id - 1 && tile_data[unique[i-2]].category === tile_data[unique[i-1]].category && tile_data[unique[i-1]].category === tile_data[unique[i]].category && !['dragon', 'wind'].includes(tile_data[unique[i]])) {
             sequence_tiles.push(unique[i-2]);
@@ -180,6 +185,11 @@ function player_check_hand(hand) {
     }
     
     for (let i = 1; i < unique.length; i++) {
+        if (sequence_tiles.includes(unique[i]) || sequence_tiles.includes(unique[i-1]) || sequence_tiles.includes(unique[i-2])) {
+            console.log('bap');
+            continue;
+        }
+
         if (tile_data[unique[i-1]].tile_id === tile_data[unique[i]].tile_id - 1 && tile_data[unique[i-1]].category === tile_data[unique[i]].category && !['dragon', 'wind'].includes(tile_data[unique[i]].category) && !sequence_tiles.includes(unique[i])) {
             incomplete_sequences.push(unique[i-1]);
             incomplete_sequences.push(unique[i]);
@@ -943,15 +953,27 @@ function player_check_tsumo(hand=player_tiles) {
         return false;
     } else if ((player_triplets + player_sequences + (player_called_tiles.length - player_called_quads)/3 === 4) && (player_pairs) === 1) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        player_drawn_tile.innerHTML = '';
+        player_reset_hand();
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        player_drawn_tile.innerHTML = '';
+        player_reset_hand();
         return true;
     } else if (check_13_orphans(hand)) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        player_drawn_tile.innerHTML = '';
+        player_reset_hand();
         return true;
     } else if (player_quads === 3 && player_pairs === 1) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        player_drawn_tile.innerHTML = '';
+        player_reset_hand();
         return true;
     } else {
         return false;
@@ -976,15 +998,27 @@ function player_check_ron(tile=enemy_recently_discarded, hand=player_tiles) {
         return false;
     } else if ((player_triplets + player_sequences + (player_called_tiles.length - player_called_quads)/3 === 4) && (player_pairs.length) === 1) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        document.getElementById(enemy_recently_discarded).remove();
+        player_reset_hand();
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        document.getElementById(enemy_recently_discarded).remove();
+        player_reset_hand();
         return true;
     } else if (check_13_orphans(hand)) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        document.getElementById(enemy_recently_discarded).remove();
+        player_reset_hand();
         return true;
     } else if (player_quads === 3 && player_pairs === 1) {
         alert('yay u win');
+        player_score.textContent = Number(player_score.textContent) + 1;
+        document.getElementById(enemy_recently_discarded).remove();
+        player_reset_hand();
         return true;
     } else {
         hand.splice(tile_id, 1);
@@ -1009,15 +1043,23 @@ function enemy_check_tsumo(hand=enemy_tiles) {
         return false;
     } else if ((enemy_triplets + enemy_sequences + (enemy_called_tiles.length - enemy_called_quads)/3 === 4) && (enemy_pairs) === 1) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        enemy_reset_hand();
         return true;
     } else if (checked[2]. length === 7) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        enemy_reset_hand();
         return true;
     } else if (check_13_orphans(hand)) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        enemy_reset_hand();
         return true;
     } else if (enemy_quads === 3 && enemy_pairs === 1) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        enemy_reset_hand();
         return true;
     } else {
         return false;
@@ -1042,16 +1084,28 @@ function enemy_check_ron(tile=player_recently_discarded, hand=enemy_tiles) {
     } else if ((enemy_triplets + enemy_sequences + (enemy_called_tiles.length - enemy_called_quads)/3 === 4) && enemy_pairs === 1) {
         alert('yay u lose');
         console.log(hand);
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        document.getElementById(player_recently_discarded).remove();
+        enemy_reset_hand();
         return true;
     } else if (checked[2].length === 7) {
         alert('yay u lose');
         console.log(hand);
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        document.getElementById(player_recently_discarded).remove();
+        enemy_reset_hand();
         return true;
     } else if (check_13_orphans(hand)) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        document.getElementById(player_recently_discarded).remove();
+        enemy_reset_hand();
         return true;
     } else if (enemy_quads === 3 && enemy_pairs === 1) {
         alert('yay u lose');
+        enemy_score.textContent = Number(enemy_score.textContent) + 1;
+        document.getElementById(player_recently_discarded).remove();
+        enemy_reset_hand();
         return true;
     } else {
         hand.splice(tile_id, 1);
@@ -1178,6 +1232,6 @@ setup();
 // dict['yoo'] = 21;
 // console.log('dict', dict)
 
-// player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
-// wall.push(29);
-// form_player_hand(player_tiles);
+player_tiles = [1,4,8,16,17,18,20,21,22,24,25,26,28];
+wall.push(29);
+form_player_hand(player_tiles);
